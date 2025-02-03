@@ -1,0 +1,27 @@
+<h1>NFL Players Table</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Number</th>
+      <th>Position</th>
+      <th>Age</th>
+      <th>Experience</th>
+      <th>College</th>
+      <th>Details</th>
+      <th>Edit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let nflplayer of nflplayers">
+      <td>{{ nflplayer.name }}</td>
+      <td>{{ nflplayer.number }}</td>
+      <td>{{ nflplayer.position }}</td>
+      <td>{{ nflplayer.age }}</td>
+      <td>{{ nflplayer.experience }}</td>
+      <td>{{ nflplayer.college }}</td>
+      <td><button (click)="select(nflplayer, 'details')">Details</button></td>
+      <td><button (click)="select(nflplayer, 'edit')">Edit</button></td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,23 @@
+<h2>Edit NFL Player</h2>
+<form (ngSubmit)="saveNflPlayer()">
+  <label>Name:</label>
+  <input [(ngModel)]="nflplayer.name" name="name" required>
+  
+  <label>Number:</label>
+  <input [(ngModel)]="nflplayer.number" name="number" required>
+  
+  <label>Position:</label>
+  <input [(ngModel)]="nflplayer.position" name="position" required>
+  
+  <label>Age:</label>
+  <input [(ngModel)]="nflplayer.age" name="age" required>
+  
+  <label>Experience:</label>
+  <input [(ngModel)]="nflplayer.experience" name="experience" required>
+  
+  <label>College:</label>
+  <input [(ngModel)]="nflplayer.college" name="college" required>
+  
+  <button type="submit">Save</button>
+  <button type="button" (click)="cancel()">Cancel</button>
+</form>

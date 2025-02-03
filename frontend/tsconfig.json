@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": false,  // Disable strict mode entirely
+    "noImplicitOverride": false,  // Allow implicit override
+    "noPropertyAccessFromIndexSignature": false,  // Allow property access from index signature
+    "noImplicitReturns": false,  // Allow implicit returns
+    "noFallthroughCasesInSwitch": false,  // Allow fallthrough cases in switch statements
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": false,  // Disable strict injection parameters
+    "strictInputAccessModifiers": false,  // Disable strict input access modifiers
+    "strictTemplates": false  // Disable strict templates
+  }
+}

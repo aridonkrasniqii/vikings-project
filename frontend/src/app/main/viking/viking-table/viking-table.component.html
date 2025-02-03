@@ -1,0 +1,39 @@
+<div class="entity-table">
+  <div class="entity-table__header">
+    <form action="">
+      <input matInput type="text" placeholder="Search" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
+    </form>
+    <button class="entity-table__button entity-table__button--new" routerLink="../form">New</button>
+    <button class="entity-table__button entity-table__button--filter">Add Filter</button>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="entity-table__table">
+    <thead>
+      <tr>
+        <th>Picture</th>
+        <th>Actor Name</th>
+        <th>Character Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let viking of dataSource.data">
+        <td><img [src]="viking.pictureUrl" alt="{{viking.name}}" width="50"></td>
+        <td>{{viking.actorName}}</td>
+        <td>{{viking.characterName}}</td>
+        <td>{{viking.description}}</td>
+        <td class="entity-table__actions">
+          <button class="entity-table__button entity-table__button--edit" [routerLink]="['../edit', viking.id]">Edit</button>
+          <button class="entity-table__button entity-table__button--delete" (click)="deleteViking(viking.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <mat-paginator [length]="filteredVikings.length"
+                 [pageSize]="5"
+                 [pageSizeOptions]="[5, 10, 25]"
+                 (page)="applyPagination($event)">
+  </mat-paginator>
+</div>

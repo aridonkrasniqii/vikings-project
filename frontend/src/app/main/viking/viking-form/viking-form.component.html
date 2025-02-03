@@ -1,0 +1,26 @@
+<div class="create-form">
+  <h2>Create Viking</h2>
+  <form [formGroup]="createForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+          <label for="name">Name</label>
+          <input id="name" formControlName="name" type="text" />
+      </div>
+      <div class="form-group">
+          <label for="actorName">Actor Name</label>
+          <input id="actorName" formControlName="actorName" type="text" />
+      </div>
+      <div class="form-group">
+          <label for="characterName">Character Name</label>
+          <input id="characterName" formControlName="characterName" type="text" />
+      </div>
+      <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description"></textarea>
+      </div>
+      <div class="form-group">
+          <label for="pictureUrl">Picture URL</label>
+          <input id="pictureUrl" formControlName="pictureUrl" type="text" />
+      </div>
+      <button type="submit" [disabled]="createForm.invalid">Create</button>
+  </form>
+</div>

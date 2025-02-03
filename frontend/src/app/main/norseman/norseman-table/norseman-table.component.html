@@ -1,0 +1,31 @@
+<div class="entity-table">
+  <div class="entity-table__header">
+    <form action="">
+      <input type="text" placeholder="Search" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
+    </form>
+    <button class="entity-table__button entity-table__button--new" routerLink="../form">New</button>
+    <button class="entity-table__button entity-table__button--filter">Add Filter</button>
+  </div>
+  <table class="entity-table__table">
+    <thead>
+      <tr>
+        <th>Picture</th>
+        <th>Actor Name</th>
+        <th>Character Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let norseman of filteredNorsemans">
+        <td><img [src]="norseman.pictureUrl" alt="{{norseman.name}}" width="50"></td>
+        <td>{{norseman.actorName}}</td>
+        <td>{{norseman.characterName}}</td>
+        <td>{{norseman.description}}</td>
+        <td class="entity-table__actions">
+          <button class="entity-table__button entity-table__button--edit" [routerLink]="['../edit', norseman.id]">Edit</button>
+          <button class="entity-table__button entity-table__button--delete" (click)="deleteNorseman(norseman.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

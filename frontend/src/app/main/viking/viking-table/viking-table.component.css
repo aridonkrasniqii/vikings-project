@@ -1,0 +1,106 @@
+/* Table Container */
+.entity-table {
+    width: 100%;
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Table Header */
+  .entity-table__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .entity-table__header form {
+    width: 50%;
+  }
+  
+  .entity-table__header input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Table */
+  .entity-table__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .entity-table__table th, .entity-table__table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .entity-table__table th {
+    background-color: #00796b;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .entity-table__table td {
+    background-color: #fafafa;
+  }
+  
+  .entity-table__table tr:nth-child(even) td {
+    background-color: #f9f9f9;
+  }
+  
+  .entity-table__table td img {
+    border-radius: 50%;
+  }
+  
+  /* Buttons */
+  .entity-table__button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .entity-table__button--new {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .entity-table__button--new:hover {
+    background-color: #45a049;
+  }
+  
+  .entity-table__button--edit {
+    background-color: #ffa500;
+    color: white;
+  }
+  
+  .entity-table__button--edit:hover {
+    background-color: #ff8c00;
+  }
+  
+  .entity-table__button--delete {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .entity-table__button--delete:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Actions */
+  .entity-table__actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  /* Paginator */
+  mat-paginator {
+    margin-top: 20px;
+  }
+  
