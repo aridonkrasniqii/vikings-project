@@ -48,3 +48,7 @@ app/settings.py
 # Docker
 Dockerfile
 docker-compose.yml
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
