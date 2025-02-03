@@ -1,0 +1,47 @@
+### Get all Vikings
+GET http://localhost:8000/api/vikings/
+Content-Type: application/json
+
+###
+
+### Get Viking by ID
+GET http://localhost:8000/api/vikings/1
+Content-Type: application/json
+
+###
+
+### Create a Viking
+POST http://localhost:8000/api/vikings/
+Content-Type: application/json
+
+{
+    "name": "Aridon",
+    "actor_name": "Aridon",
+    "description": "P9",
+    "photo": "https://images.com"
+}
+
+###
+
+### Update a Viking
+PUT http://localhost:8000/api/vikings/1
+Content-Type: application/json
+
+{
+    "name": "Aridon Updated",
+    "actor_name": "Aridon",
+    "description": "P9 Updated",
+    "photo": "https://images.com"
+}
+
+###
+
+### Delete a Viking
+DELETE http://localhost:8000/api/vikings/1
+Content-Type: application/json
+
+###
+
+### Scrape Vikings
+POST http://localhost:8000/api/vikings/scrape/
+Content-Type: application/json

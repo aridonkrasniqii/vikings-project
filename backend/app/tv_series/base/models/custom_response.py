@@ -4,12 +4,6 @@ from rest_framework import status
 import importlib
 
 class CustomResponse(Response):
-    """
-    Custom Response class for structured API responses.
-    - Automatically serializes data if it's a queryset or list of objects.
-    - Includes status code and optional message.
-    """
-
     def __init__(self, data=None, status_code=status.HTTP_200_OK, message=None, **kwargs):
         if data is None:
             data = {}
@@ -34,9 +28,6 @@ class CustomResponse(Response):
         return data  # If it's a simple list, return as is
 
     def get_model_serializer(self, model):
-        """
-        Use importlib to dynamically load the serializer based on the model.
-        """
         model_name = model.__name__
         try:
             # Dynamically load the serializer module

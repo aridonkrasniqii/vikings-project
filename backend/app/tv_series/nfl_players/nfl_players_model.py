@@ -1,41 +1,7 @@
 from django.db import models
-from .managers import VikingManager, NorsemenManager, NflPlayerManager, NflPlayerStatsManager
 
-# Create your models here.
-class VikingBase(models.Model):
-    name = models.CharField(max_length=255)
-    photo = models.URLField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        abstract = True
+from tv_series.nfl_players.nfl_players_manager import NflPlayerManager
 
-
-class Viking(VikingBase):
-    actor_name = models.CharField(max_length=255)
-    description = models.TextField()
-    objects = VikingManager()    
-    
-    class Meta:
-        db_table = 'vikings'
-    
-    def __str__(self):
-        return self.name
-    
-
-class Norseman(VikingBase):
-    actor_name = models.CharField(max_length=255)
-    description = models.TextField()
-
-    objects = NorsemenManager()
-    
-    class Meta:
-        db_table = 'norsemans'
-    
-    def __str__(self):
-        return self.name
-from django.db import models
 
 class NFLPlayer(models.Model):
     number = models.IntegerField()
@@ -43,6 +9,8 @@ class NFLPlayer(models.Model):
     age = models.IntegerField()
     experience = models.IntegerField()  # Years in the NFL
     college = models.CharField(max_length=255)
+
+    objects = NflPlayerManager()
 
     class Meta:
         db_table = 'nflplayers'

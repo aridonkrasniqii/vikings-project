@@ -1,7 +1,10 @@
 from rest_framework import serializers
-from tv_series.models import Viking, Norseman, NFLPlayer, NflPlayerStats
 
-from tv_series.models import VikingBase
+from tv_series.base.models.base_models import VikingBase
+from tv_series.nfl_players.nfl_players_model import NFLPlayer, NflPlayerStats
+from tv_series.norsemans.norsemen_models import Norseman
+from tv_series.vikings.vikings_model import Viking
+
 
 class VikingBaseSerializer(serializers.ModelSerializer):
     class Meta:

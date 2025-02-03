@@ -24,7 +24,7 @@ def scrape_norsemen():
     process.start()
 
 @shared_task
-def scrape_nfl():
+def scrape_nfl_players():
     process = CrawlerProcess(settings={})
     service = VikingsScraperService()
     nfl_data = process.crawl(NflPlayersSpider)

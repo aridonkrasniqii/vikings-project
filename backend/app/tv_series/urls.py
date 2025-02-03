@@ -1,16 +1,24 @@
 from django.urls import path
-from .views import VikingView, NorsemanView, NFLPlayerView, NflPlayerStats
+
+from tv_series.nfl_players.nfl_players_view import NFLPlayerListView, NFLPlayerDetailView, NFLPlayerScrapeView
+from tv_series.norsemans.norsemen_view import NorsemanListView, NorsemanDetailView, NorsemanScrapeView
+from tv_series.vikings.vikings_view import VikingsListView, VikingsDetailView, VikingsScrapeView
 
 urlpatterns = [
-    path('vikings/', VikingView.as_view(), name='vikings'),
-    path('vikings/<int:pk>/', VikingView.as_view(), name='vikings_by_id'),
-    
-    path('norsemen/', NorsemanView.as_view(), name='norsemen'),
-    path('norsemen/<int:pk>/', NorsemanView.as_view(), name='norsemen_by_id'),
-    
-    path('nfl-players/', NFLPlayerView.as_view(), name='nfl_players'),
-    path('nfl-players/<int:pk>/', NFLPlayerView.as_view(), name='nfl_players_by_id'),
-    
-    path('nfl-player-stats/', NflPlayerStats.as_view(), name='nfl_player_stats'),
-    path('nfl-player-stats/<int:pk>/', NflPlayerStats.as_view(), name='nfl_player_stats_by_id'),
+    path('vikings/', VikingsListView.as_view(), name='viking_list'),  # List all Vikings
+    path('viking/<int:pk>/', VikingsDetailView.as_view(), name='viking_detail'),
+    path('viking/scrape/', VikingsScrapeView.as_view(), name='viking_scrape'),
+
+    path('norsemen/', NorsemanListView.as_view(), name='norseman_list'),
+    path('norseman/<int:pk>/', NorsemanDetailView.as_view(), name='norseman_detail'),
+    path('norsemen/scrape/', NorsemanScrapeView.as_view(), name='norseman_scrape'),
+
+    path('nflplayers/', NFLPlayerListView.as_view(), name='nfl__player_list'),
+    path('nflplayer/<int:pk>/', NFLPlayerDetailView.as_view(), name='nfl_player_detail'),
+    path('nflplayers/scrape/', NFLPlayerScrapeView.as_view(), name='nfl_player_scrape'),
 ]
+
+
+
+
+

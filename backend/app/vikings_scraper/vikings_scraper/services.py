@@ -1,9 +1,12 @@
-from tv_series.services import VikingService, NorsemanService, NFLPlayerService
+from tv_series.nfl_players.nfl_players_service import NFLPlayerService
+from tv_series.norsemans.norsemen_service import NorsemenService
+from tv_series.vikings.vikings_service import VikingsService
+
 
 class VikingsScraperService:
     def __init__(self):
-        self.viking_service = VikingService()    
-        self.norsemen_service = NorsemanService()
+        self.viking_service = VikingsService()
+        self.norsemen_service = NorsemenService()
         self.nfl_player_service = NFLPlayerService()
     
     @staticmethod

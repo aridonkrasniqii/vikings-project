@@ -3,9 +3,8 @@ from scrapy import signals
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
-# Set up logging for the Spider and Downloader middlewares
-logger = logging.getLogger('vikings_scraper')
 
+logger = logging.getLogger('vikings_scraper')
 
 class VikingsScraperSpiderMiddleware:
     # This middleware manages spider-level logic such as start requests and responses
@@ -94,8 +93,10 @@ class SeleniumMiddleware:
 
     def _get_edge_options(self, driver_arguments):
         edge_options = Options()
+
         for arg in driver_arguments:
             edge_options.add_argument(arg)
+        edge_options.add_argument('--headless=new')
         edge_options.add_argument('--disable-gpu')
         edge_options.add_argument('--no-sandbox')
         edge_options.add_argument('--disable-webgl')  # Disable WebGL if it's not required
