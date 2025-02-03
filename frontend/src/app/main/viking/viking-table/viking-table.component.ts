@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { VikingService } from '../../../services/viking.service';
 import { Viking } from '../../../interfaces/viking.interface';
@@ -10,13 +11,15 @@ import { Viking } from '../../../interfaces/viking.interface';
   templateUrl: './viking-table.component.html',
   styleUrls: ['./viking-table.component.css']
 })
-export class VikingTableComponent implements OnInit {
-  vikings: Viking[] = [];
-  filteredVikings: Viking[] = [];
-  searchTerm: string = '';
+export class VikingTableComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['picture', 'actorName', 'characterName', 'description', 'actions'];
   dataSource = new MatTableDataSource<Viking>();
-  
+  searchTerm: string = '';
+  totalItems = 0;
+  itemsPerPage = 10;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private vikingService: VikingService) { }
 
@@ -24,43 +27,36 @@ export class VikingTableComponent implements OnInit {
     this.getAllVikings();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   getAllVikings(): void {
     this.vikingService.getAllVikings().subscribe((vikings) => {
-      this.vikings = vikings;
-      this.filteredVikings = vikings;
       this.dataSource.data = vikings;
-      this.dataSource.paginator = this.paginator;
+      this.totalItems = vikings.length;
     });
   }
 
   deleteViking(id: number): void {
     this.vikingService.deleteViking(id).subscribe(() => {
-      this.vikings = this.vikings.filter(viking => viking.id !== id);
-      this.filteredVikings = this.filteredVikings.filter(viking => viking.id !== id);
-      this.dataSource.data = this.filteredVikings;
+      this.dataSource.data = this.dataSource.data.filter(viking => viking.id !== id);
+      this.totalItems = this.dataSource.data.length;
     });
   }
 
-  
   applyFilter(): void {
-    this.filteredVikings = this.vikings.filter(viking => 
-      viking.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-    this.dataSource.data = this.filteredVikings;
-    // Reapply pagination after filtering
-    if (this.paginator) {
-      this.paginator.firstPage();
+    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
     }
   }
 
-  // Apply pagination for server-side fetching
   applyPagination(event: any): void {
     const pageIndex = event.pageIndex;
     const pageSize = event.pageSize;
-
-    this.vikingService.getVikings(pageIndex, pageSize).subscribe((data) => {
-      this.dataSource.data = data.vikings;
-      this.paginator.length = data.totalCount; // total count from the server
-    });
+    this.dataSource.paginator.pageIndex = pageIndex;
+    this.dataSource.paginator.pageSize = pageSize;
   }
 }

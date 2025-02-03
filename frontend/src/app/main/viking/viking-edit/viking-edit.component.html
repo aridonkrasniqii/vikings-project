@@ -1,25 +1,43 @@
-<div class="edit-form">
+<div class="edit-form-container">
   <h2>Edit Viking</h2>
   <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="name">Name</label>
       <input id="name" formControlName="name" type="text" />
+      <div *ngIf="editForm.get('name').invalid && editForm.get('name').touched" class="error-message">
+        Name is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="actorName">Actor Name</label>
       <input id="actorName" formControlName="actorName" type="text" />
+      <div *ngIf="editForm.get('actorName').invalid && editForm.get('actorName').touched" class="error-message">
+        Actor Name is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="characterName">Character Name</label>
       <input id="characterName" formControlName="characterName" type="text" />
+      <div *ngIf="editForm.get('characterName').invalid && editForm.get('characterName').touched" class="error-message">
+        Character Name is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="description">Description</label>
       <textarea id="description" formControlName="description"></textarea>
+      <div *ngIf="editForm.get('description').invalid && editForm.get('description').touched" class="error-message">
+        Description is required.
+      </div>
     </div>
     <div class="form-group">
       <label for="pictureUrl">Picture URL</label>
       <input id="pictureUrl" formControlName="pictureUrl" type="text" />
+      <div *ngIf="editForm.get('pictureUrl').invalid && editForm.get('pictureUrl').touched" class="error-message">
+        Valid Picture URL is required.
+      </div>
+    </div>
+    <div *ngIf="formStatus" class="form-status" [ngClass]="formStatus.type">
+      {{ formStatus.message }}
     </div>
     <button type="submit" [disabled]="editForm.invalid">Save</button>
   </form>

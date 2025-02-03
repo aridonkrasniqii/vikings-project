@@ -46,3 +46,14 @@ button {
 button:disabled {
     background-color: #ccc;
 }
+
+.success-message {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+  }
+  

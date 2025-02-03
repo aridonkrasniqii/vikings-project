@@ -12,6 +12,8 @@ import { stringPatternValidator } from '../../../validators/pattern-string.valid
 })
 export class VikingFormComponent implements OnInit {
   createForm: FormGroup;
+  successMessage: string = '';
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -28,8 +30,7 @@ export class VikingFormComponent implements OnInit {
       name: ['', [Validators.required, stringPatternValidator]],
       actorName: ['', [Validators.required, stringPatternValidator]],
       characterName: ['', [Validators.required, stringPatternValidator]],
-      description: ['', [Validators.required, stringPatternValidator]],
-      pictureUrl: ['', [Validators.required, stringPatternValidator]]
+      description: ['', [Validators.required]]
     });
   }
 
@@ -38,8 +39,17 @@ export class VikingFormComponent implements OnInit {
       return;
     }
 
-    this.vikingService.createViking(this.createForm.value).subscribe(() => {
-      this.router.navigate(['/vikings']);
+    this.vikingService.createViking(this.createForm.value).subscribe({
+      next: () => {
+        this.successMessage = 'Viking created successfully!';
+        setTimeout(() => {
+          this.successMessage = '';
+          this.router.navigate(['/vikings']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'An error occurred. Please try again.';
+      }
     });
   }
 }

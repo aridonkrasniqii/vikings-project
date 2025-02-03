@@ -1,21 +1,16 @@
 <div class="details-container">
-    <h2>Viking Details</h2>
-    <div *ngIf="viking">
-      <img [src]="viking.photo" alt="{{viking.name}}" width="150">
-      <div>
-        <strong>Name:</strong> {{viking.name}}
-      </div>
-      <div>
-        <strong>Actor Name:</strong> {{viking.actorName}}
-      </div>
-      <div>
-        <strong>Character Name:</strong> {{viking.characterName}}
-      </div>
-      <div>
-        <strong>Description:</strong> {{viking.description}}
-      </div>
-      <button class="entity-table__button entity-table__button--edit" [routerLink]="['../edit', viking.id]">Edit</button>
-      <button class="entity-table__button entity-table__button--back" (click)="goBack()">Back</button>
+  <h2>Viking Details</h2>
+  <div *ngIf="viking" class="viking-details">
+    <img [src]="viking.photo" alt="{{viking.name}}" class="viking-photo">
+    <div class="viking-info">
+      <div><strong>Name:</strong> {{viking.name}}</div>
+      <div><strong>Actor Name:</strong> {{viking.actorName}}</div>
+      <div><strong>Character Name:</strong> {{viking.characterName}}</div>
+      <div><strong>Description:</strong> {{viking.description}}</div>
+    </div>
+    <div class="viking-actions">
+      <button class="btn btn-edit" [routerLink]="['../edit', viking.id]">Edit</button>
+      <button class="btn btn-back" (click)="goBack()">Back</button>
     </div>
   </div>
-  
+</div>
