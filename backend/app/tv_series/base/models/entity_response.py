@@ -12,7 +12,6 @@ class EntityResponse(Response):
             data = serializer(data, many=True).data
         else:
             data = serializer(data).data
-
         response_data = {
             "status_code": status_code,
             "data": data,

@@ -13,12 +13,12 @@ class VikingsListView(BaseListView):
         super().__init__(**kwargs)
 
     def get(self, request):
-        return self.service.get_all(request)
+        return self.service.get_all(request, view=self)
 
     def post(self, request):
         return self.service.create(request.data)
 
-class VikingsDetailView(BaseListView):
+class VikingsDetailView(BaseDetailView):
     def __init__(self, **kwargs):
         self.service = VikingsService()
         super().__init__(**kwargs)

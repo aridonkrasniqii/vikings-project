@@ -27,9 +27,12 @@ class BaseManager(models.Manager):
     def create_model(self, **kwargs):
         return self.create(**kwargs)
 
-    def update_model(self, instance):
-        instance.save()
-        return self.get_model_by_id(instance.id)
+    def update_model(self, model_id, update_data):
+        model = self.get(id=model_id)
+        for key, value in update_data.items():
+            setattr(model, key, value)
+        model.save()
+        return model
 
     def delete_model(self, instance):
         instance.delete()

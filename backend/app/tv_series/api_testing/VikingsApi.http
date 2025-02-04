@@ -1,0 +1,76 @@
+### Get all Norsemen
+GET http://localhost:8000/api/norsemen/
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?page=1&limit=10
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?q=ActorName
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?desc=created_at
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?asc=name
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?page=2&limit=20&q=actor_name&desc=created_at
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/norsemen/?search_fields=actor_name&q=Haki
+Content-Type: application/json
+
+
+### Get Norseman by ID
+GET http://localhost:8000/api/norsemen/5
+Content-Type: application/json
+
+###
+
+### Create a Norseman
+POST http://localhost:8000/api/norsemen/
+Content-Type: application/json
+
+{
+    "name": "Ragnar",
+    "actor_name": "Travis Fimmel",
+    "description": "Legendary Viking leader",
+    "photo": "https://imageurl.com"
+}
+
+###
+
+### Update a Norseman
+PUT http://localhost:8000/api/norsemen/10
+Content-Type: application/json
+
+{
+    "name": "Ragnar Updated",
+    "actor_name": "Travis Updated",
+    "description": "Updated description for Ragnar",
+    "photo": "https://updatedimageurl.com"
+}
+
+###
+
+### Delete a Norseman
+DELETE http://localhost:8000/api/norsemen/9
+Content-Type: application/json
+
+###
+
+### Scrape Norsemen
+POST http://localhost:8000/api/norsemen/scrape/
+Content-Type: application/json

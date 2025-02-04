@@ -8,3 +8,9 @@ backend/app/tv_series/norsemans/__pycache__/
 backend/app/tv_series/vikings/__pycache__/
 backend/app/vikings_scraper/vikings_scraper/spiders/__pycache__/
 backend/app/tv_series/migrations/
+backend/.idea/backend.iml
+backend/.idea/inspectionProfiles/
+backend/.idea/misc.xml
+backend/.idea/modules.xml
+backend/.idea/vcs.xml
+backend/.idea/backend.iml

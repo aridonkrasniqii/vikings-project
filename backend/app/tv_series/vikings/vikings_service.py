@@ -18,8 +18,8 @@ class VikingsService(BaseService):
     def __init__(self):
         super().__init__(VikingSerializer, PaginatedVikingSerializer)
 
-    def get_all(self, request):
-        return self.paginated_response(Viking.objects.get_paginated_vikings(request, view=self))
+    def get_all(self, request, view):
+        return self.paginated_response(Viking.objects.get_paginated_vikings(request, view))
 
     def get_by_id(self, viking_id):
         self._validate_id(viking_id)
@@ -28,7 +28,7 @@ class VikingsService(BaseService):
 
         if viking:
             return self.response(viking, status.HTTP_200_OK)
-        return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_CREATED)
+        return self.response([], status.HTTP_404_NOT_FOUND, self.VIKING_NOT_FOUND)
 
     def create(self, data):
         self._validate_data(data)
@@ -40,10 +40,10 @@ class VikingsService(BaseService):
 
         viking = Viking.objects.get_viking_by_id(viking_id)
         if not viking:
-            return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_NOT_FOUND)
+            return self.response(None, status.HTTP_404_NOT_FOUND, "a je budall ti a cka")
 
         self._validate_data(data)
-        updated_viking = Viking.objects.update_viking(data)
+        updated_viking = Viking.objects.update_viking(viking_id, data)
         return self.response(updated_viking, status.HTTP_200_OK, self.VIKING_UPDATED)
 
     def delete(self, viking_id):
@@ -75,4 +75,4 @@ class VikingsService(BaseService):
 
         if not is_valid:
             return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
-        return None
+        return self.response([], status.HTTP_200_OK, "a je normal")

@@ -1,0 +1,132 @@
+# Vikings API
+
+## GET all Vikings
+curl -X GET http://localhost:8000/api/vikings/ \
+     -H "Content-Type: application/json"
+
+## GET Viking by ID
+curl -X GET http://localhost:8000/api/vikings/1/ \
+     -H "Content-Type: application/json"
+
+## POST (Create a Viking)
+curl -X POST http://localhost:8000/api/vikings/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "actor_name": "//",
+          "description": "P9",
+          "name": "Haki",
+          "photo": "https://images.com"
+         }'
+
+## PUT (Update a Viking)
+curl -X PUT http://localhost:8000/api/vikings/1/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "actor_name": "//",
+          "description": "P9 updated",
+          "name": "Haki updated",
+          "photo": "https://images.com/updated"
+         }'
+
+## DELETE a Viking
+curl -X DELETE http://localhost:8000/api/vikings/1/ \
+     -H "Content-Type: application/json"
+
+
+# Norsemen API
+
+## GET all Norsemen
+curl -X GET http://localhost:8000/api/norsemen/ \
+     -H "Content-Type: application/json"
+
+## GET Norseman by ID
+curl -X GET http://localhost:8000/api/norsemen/1/ \
+     -H "Content-Type: application/json"
+
+## POST (Create a Norseman)
+curl -X POST http://localhost:8000/api/norsemen/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "actor_name": "//",
+          "description": "P9",
+          "name": "Haki",
+          "photo": "https://images.com"
+         }'
+
+## PUT (Update a Norseman)
+curl -X PUT http://localhost:8000/api/norsemen/1/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "actor_name": "//",
+          "description": "P9 updated",
+          "name": "Haki updated",
+          "photo": "https://images.com/updated"
+         }'
+
+## DELETE a Norseman
+curl -X DELETE http://localhost:8000/api/norsemen/1/ \
+     -H "Content-Type: application/json"
+
+
+# NFL Players API
+
+## GET all NFL Players
+curl -X GET http://localhost:8000/api/nflplayers/ \
+     -H "Content-Type: application/json"
+
+## GET NFL Player by ID
+curl -X GET http://localhost:8000/api/nflplayers/1/ \
+     -H "Content-Type: application/json"
+
+## POST (Create an NFL Player with Stats)
+curl -X POST http://localhost:8000/api/nflplayers/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "name": "Tom Brady",
+          "photo": "https://images.com/tombrady.jpg",
+          "number": 12,
+          "position": "Quarterback",
+          "age": 43,
+          "experience": 20,
+          "college": "University of Michigan",
+          "stats": [
+              {
+                  "season": 2021,
+                  "team": "Tampa Bay Buccaneers",
+                  "games_played": 16,
+                  "receptions": 0,
+                  "receiving_yards": 0,
+                  "receiving_touchdowns": 0,
+                  "longest_reception": 0
+              }
+          ]
+         }'
+
+## PUT (Update an NFL Player with Stats)
+curl -X PUT http://localhost:8000/api/nflplayers/1/ \
+     -H "Content-Type: application/json" \
+     -d '{
+          "name": "Tom Brady",
+          "photo": "https://images.com/tombrady_updated.jpg",
+          "number": 12,
+          "position": "Quarterback",
+          "age": 44,
+          "experience": 21,
+          "college": "University of Michigan",
+          "stats": [
+              {
+                  "id": 1,
+                  "season": 2021,
+                  "team": "Tampa Bay Buccaneers",
+                  "games_played": 17,
+                  "receptions": 0,
+                  "receiving_yards": 0,
+                  "receiving_touchdowns": 0,
+                  "longest_reception": 0
+              }
+          ]
+         }'
+
+## DELETE an NFL Player
+curl -X DELETE http://localhost:8000/api/nflplayers/1/ \
+     -H "Content-Type: application/json"

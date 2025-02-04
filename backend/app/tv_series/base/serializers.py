@@ -27,13 +27,33 @@ class NorsemanSerializer(VikingBaseSerializer):
         model = Norseman
         fields = '__all__'
 
-class NFLPlayerSerializer(VikingBaseSerializer):
-    position = serializers.CharField(max_length=100)
-    stats = serializers.PrimaryKeyRelatedField(queryset=NflPlayerStats.objects.all(), required=False)
+class NFLPlayerStatsSerializer(serializers.ModelSerializer):
+    player = serializers.PrimaryKeyRelatedField(queryset=NFLPlayer.objects.all())
+    season = serializers.IntegerField()  # Season year
+    team = serializers.CharField(max_length=255)  # Team for the season
+    games_played = serializers.IntegerField(default=0)  # Total games played
+    receptions = serializers.IntegerField(default=0)  # Total receptions
+    receiving_yards = serializers.IntegerField(default=0)  # Total receiving yards
+    receiving_touchdowns = serializers.IntegerField(default=0)  # Receiving touchdowns
+    longest_reception = serializers.IntegerField(default=0)  # Longest reception in yards
 
-    class Meta(VikingBaseSerializer.Meta):
+    class Meta:
+        model = NflPlayerStats
+        fields = '__all__'
+
+
+class NFLPlayerSerializer(serializers.ModelSerializer):
+    stats = NFLPlayerStatsSerializer(many=True, read_only=True)
+    number = serializers.IntegerField(required=False)
+    position = serializers.CharField(max_length=100, required=False)
+    age = serializers.IntegerField(required=False)
+    experience = serializers.IntegerField(required=False)
+    college = serializers.CharField(max_length=255, required=False)
+
+    class Meta:
         model = NFLPlayer
         fields = '__all__'
+
 
 class PaginatedVikingSerializer(serializers.Serializer):
     total_items = serializers.IntegerField()
@@ -41,4 +61,18 @@ class PaginatedVikingSerializer(serializers.Serializer):
     current_page = serializers.IntegerField()
     limit = serializers.IntegerField()
     data = VikingSerializer(many=True)
+
+class PaginatedNorsemanSerializer(serializers.Serializer):
+    total_items = serializers.IntegerField()
+    total_pages = serializers.IntegerField()
+    current_page = serializers.IntegerField()
+    limit = serializers.IntegerField()
+    data = NorsemanSerializer(many=True)
+
+class PaginatedNFLPlayerSerializer(serializers.Serializer):
+    total_items = serializers.IntegerField()
+    total_pages = serializers.IntegerField()
+    current_page = serializers.IntegerField()
+    limit = serializers.IntegerField()
+    data = NFLPlayerSerializer(many=True)
 

@@ -1,7 +1,7 @@
 from django.db import models
 
 from tv_series.base.models.base_models import VikingBase
-from tv_series.nfl_players.nfl_players_manager import NflPlayerManager
+from tv_series.nfl_players.nfl_players_manager import NflPlayerManager, NflPlayerStatsManager
 
 
 class NFLPlayer(VikingBase):
@@ -29,6 +29,8 @@ class NflPlayerStats(models.Model):
     receiving_yards = models.IntegerField(default=0)  # Total receiving yards
     receiving_touchdowns = models.IntegerField(default=0)  # Receiving touchdowns
     longest_reception = models.IntegerField(default=0)  # Longest reception in yards
+
+    objects = NflPlayerStatsManager()
 
     class Meta:
         db_table = 'nflplayerstats'

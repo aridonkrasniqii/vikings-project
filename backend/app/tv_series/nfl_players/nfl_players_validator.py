@@ -32,8 +32,8 @@ class NFLPlayerValidator(BaseValidator):
 
     def validate(self):
         self.errors = []
-        self.validate_name()
-        self.validate_photo_url()
+        self.validate_name(self.fields['name'])
+        self.validate_photo_url(self.fields['photo'])
         self.validate_number()
         self.validate_position()
         self.validate_age()
@@ -45,14 +45,16 @@ class NFLPlayerValidator(BaseValidator):
         return True, None
 
 
-class NflPlayerStatsValidator(BaseValidator):
-    def __init__(self, player, season, team, games_played, receptions, receiving_yards, receiving_touchdowns, longest_reception):
-        super().__init__(player=player, season=season, team=team, games_played=games_played, receptions=receptions,
-                         receiving_yards=receiving_yards, receiving_touchdowns=receiving_touchdowns, longest_reception=longest_reception)
-
-    def validate_player(self):
-        if not self.player:
-            self.errors.append("Player is required")
+class NflPlayerStatsValidator():
+    def __init__(self, season, team, games_played, receptions, receiving_yards, receiving_touchdowns, longest_reception):
+        self.errors = []
+        self.season = season
+        self.team = team
+        self.games_played = games_played
+        self.receptions = receptions
+        self.receiving_yards = receiving_yards
+        self.receiving_touchdowns = receiving_touchdowns
+        self.longest_reception = longest_reception
 
     def validate_season(self):
         if not isinstance(self.season, int) or self.season <= 0:
@@ -84,7 +86,6 @@ class NflPlayerStatsValidator(BaseValidator):
 
     def validate(self):
         self.errors = []
-        self.validate_player()
         self.validate_season()
         self.validate_team()
         self.validate_games_played()

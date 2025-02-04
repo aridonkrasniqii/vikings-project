@@ -1,6 +1,5 @@
 import logging
 from tv_series.base.managers import BaseManager
-from tv_series.base.models.pagination_model import PaginationModel
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +14,8 @@ class VikingManager(BaseManager):
     def create_viking(self, viking):
         return self.create_model(**viking)
 
-    def update_viking(self, viking):
-        return self.update_model(**viking)
+    def update_viking(self, viking_id, viking):
+        return self.update_model(viking_id, viking)
 
     def delete_viking(self, viking):
         return self.delete_model(viking)

@@ -1,0 +1,82 @@
+### Get all NFL Players
+GET http://localhost:8000/api/nflplayers/
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?page=1&limit=10
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?q=name
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?desc=created_at
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?asc=name
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?page=2&limit=20&q=name&desc=created_at
+Content-Type: application/json
+
+###
+
+GET http://localhost:8000/api/nflplayers/?search_fields=college&q=Alabama
+Content-Type: application/json
+
+
+### Get NFL Player by ID
+GET http://localhost:8000/api/nflplayers/5
+Content-Type: application/json
+
+###
+
+### Create an NFL Player
+POST http://localhost:8000/api/nflplayers/
+Content-Type: application/json
+
+{
+    "name": "Tom Brady",
+    "photo": "https://imageurl.com",
+    "number": 12,
+    "position": "Quarterback",
+    "age": 43,
+    "experience": 21,
+    "college": "Michigan"
+}
+
+###
+
+### Update an NFL Player
+PUT http://localhost:8000/api/nflplayers/6
+Content-Type: application/json
+
+{
+    "name": "Tom Brady Updated",
+    "photo": "https://updatedimageurl.com",
+    "number": 12,
+    "position": "Quarterback",
+    "age": 44,
+    "experience": 22,
+    "college": "Michigan"
+}
+
+###
+
+### Delete an NFL Player
+DELETE http://localhost:8000/api/nflplayers/6
+Content-Type: application/json
+
+###
+
+### Scrape NFL Players
+POST http://localhost:8000/api/nflplayers/scrape/
+Content-Type: application/json

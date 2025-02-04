@@ -13,7 +13,7 @@ class BaseService(ABC):
         self.paginated_serializer = paginated_serializer
 
     @abstractmethod
-    def get_all(self, request):
+    def get_all(self, request, view):
         pass
 
     @abstractmethod

@@ -1,83 +1,121 @@
-from rest_framework import status
+from django.db import transaction
 
+from tv_series.base.validators import BaseValidator
+
+from rest_framework import status
 from tv_series.base.models.entity_response import EntityResponse
+from tv_series.base.services import BaseService
 from .nfl_players_model import NFLPlayer, NflPlayerStats
-from ..base.services import BaseService
+from .nfl_players_validator import NFLPlayerValidator, NflPlayerStatsValidator
+from ..base.serializers import NFLPlayerSerializer, PaginatedNFLPlayerSerializer
 
 
 class NFLPlayerService(BaseService):
-    def __init__(self):
-        pass
 
-    def get_all(self):
-        nfl_players = NFLPlayer.objects.all()
-        return EntityResponse(nfl_players, status.HTTP_200_OK)
+    NFL_PLAYER_CREATED = 'NFL player created'
+    NFL_PLAYER_UPDATED = 'NFL player updated'
+    NFL_PLAYER_DELETED = 'NFL player deleted'
+    NFL_PLAYER_NOT_FOUND = 'NFL player not found'
+    NFL_PLAYER_BAD_REQUEST = 'Bad request. Missing fields.'
+
+    def __init__(self):
+        super().__init__(NFLPlayerSerializer, PaginatedNFLPlayerSerializer)
+
+    def get_all(self, request, view):
+        return self.paginated_response(NFLPlayer.objects.get_paginated_nfl_players(request, view))
 
     def get_by_id(self, nfl_player_id):
+        validation_response = self._validate_id(nfl_player_id)
+        if validation_response:
+            return validation_response
+
         nfl_player = NFLPlayer.objects.get_nfl_player_by_id(nfl_player_id)
         if nfl_player:
-            return EntityResponse(nfl_player, status.HTTP_200_OK)
-        return EntityResponse(None, status.HTTP_404_NOT_FOUND, "NFL player not found")
+            return self.response(nfl_player, status.HTTP_200_OK)
+        return self.response(None, status.HTTP_404_NOT_FOUND, self.NFL_PLAYER_NOT_FOUND)
 
     def create(self, data):
-        name = data.get('name')
-        photo = data.get('photo')
-        position = data.get('position')
-        stats = data.get('stats')
+        self._validate_data(data)
 
-        if not all([name, photo, position]):
-            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, "Bad request. Missing fields.")
+        stats_data = data.pop('stats', [])
 
-        new_nfl_player = NFLPlayer.objects.create_nfl_player(name, photo, position, stats)
-        return EntityResponse(new_nfl_player, status.HTTP_201_CREATED)
+        with transaction.atomic():
+            created_nfl_player = NFLPlayer.objects.create_nfl_player(data)
+            for stat in stats_data:
+                NflPlayerStats.objects.create_nfl_player_stats(created_nfl_player, stat)
+
+        return self.response(created_nfl_player, status.HTTP_201_CREATED, self.NFL_PLAYER_CREATED)
 
     def update(self, nfl_player_id, data):
+        validation_response = self._validate_id(nfl_player_id)
+        if validation_response:
+            return validation_response
+
         nfl_player = NFLPlayer.objects.get_nfl_player_by_id(nfl_player_id)
         if not nfl_player:
-            return EntityResponse(None, status.HTTP_404_NOT_FOUND, "NFL player not found")
+            return self.response(None, status.HTTP_404_NOT_FOUND, self.NFL_PLAYER_NOT_FOUND)
 
-        name = data.get('name', nfl_player.name)
-        photo = data.get('photo', nfl_player.photo)
-        position = data.get('position', nfl_player.position)
-        stats = data.get('stats', nfl_player.stats)
+        validation_response = self._validate_data(data)
+        if validation_response:
+            return validation_response
 
-        updated_nfl_player = NFLPlayer.objects.update_nfl_player(nfl_player, name, photo, position, stats)
-        return EntityResponse(updated_nfl_player, status.HTTP_200_OK)
+        stats_data = data.pop('stats', [])
+
+        with transaction.atomic():
+            updated_nfl_player = NFLPlayer.objects.update_nfl_player(nfl_player_id, data)
+            for stat in stats_data:
+                NflPlayerStats.objects.update_nfl_player_stats(stat['id'], stat)
+
+        return self.response(updated_nfl_player, status.HTTP_200_OK, self.NFL_PLAYER_UPDATED)
 
     def delete(self, nfl_player_id):
+        self._validate_id(nfl_player_id)
+
         nfl_player = NFLPlayer.objects.get_nfl_player_by_id(nfl_player_id)
         if not nfl_player:
-            return EntityResponse(None, status.HTTP_404_NOT_FOUND, "NFL player not found")
+            return self.response(None, status.HTTP_404_NOT_FOUND, self.NFL_PLAYER_NOT_FOUND)
 
         NFLPlayer.objects.delete_nfl_player(nfl_player)
-        return EntityResponse(None, status.HTTP_204_NO_CONTENT)
+        return self.response(nfl_player, status.HTTP_200_OK, self.NFL_PLAYER_DELETED)
 
-class NflPlayerStatsService:
-    def __init__(self):
-        pass
+    def _validate_id(self, nfl_player_id):
+        is_valid_id, error_message = BaseValidator.validate_id(nfl_player_id)
+        if not is_valid_id:
+            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
+        return None
 
-    def create(self, data):
-        touchdowns = data.get('touchdowns', 0)
-        yards = data.get('yards', 0)
-        interceptions = data.get('interceptions', 0)
-        sacks = data.get('sacks', 0)
-        fumbles = data.get('fumbles', 0)
+    def _validate_data(self, data):
+        name = data.get('name')
+        photo = data.get('photo')
+        number = data.get('number')
+        position = data.get('position')
+        age = data.get('age')
+        experience = data.get('experience')
+        college = data.get('college')
 
-        new_stats = NflPlayerStats.objects.create_stats(touchdowns, yards, interceptions, sacks, fumbles)
-        return EntityResponse(new_stats, status.HTTP_201_CREATED)
+        validator = NFLPlayerValidator(name, photo, number, position, age, experience, college)
+        is_valid, error_message = validator.validate()
 
-    def update(self, stats_id, data):
-        stats = NflPlayerStats.objects.get(id=stats_id)
-        if not stats:
-            return EntityResponse(None, status.HTTP_404_NOT_FOUND, "Stats not found")
+        if not is_valid:
+            return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
 
-        updated_stats = NflPlayerStats.objects.update_stats(stats, **data)
-        return EntityResponse(updated_stats, status.HTTP_200_OK)
+        stats_data = data.get('stats', [])
+        for stat in stats_data:
+            stat_validator = NflPlayerStatsValidator(
+                season=stat.get('season'),
+                team=stat.get('team'),
+                games_played=stat.get('games_played'),
+                receptions=stat.get('receptions'),
+                receiving_yards=stat.get('receiving_yards'),
+                receiving_touchdowns=stat.get('receiving_touchdowns'),
+                longest_reception=stat.get('longest_reception')
+            )
+            is_valid, error_message = stat_validator.validate()
+            if not is_valid:
+                return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
 
-    def delete(self, stats_id):
-        stats = NflPlayerStats.objects.get(id=stats_id)
-        if not stats:
-            return EntityResponse(None, status.HTTP_404_NOT_FOUND, "Stats not found")
+        return
 
-        NflPlayerStats.objects.delete_stats(stats)
-        return EntityResponse(None, status.HTTP_204_NO_CONTENT)
+
+
+
