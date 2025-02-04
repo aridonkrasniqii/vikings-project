@@ -1,0 +1,10 @@
+backend/app/tv_series/nfl_players/__pycache__/
+backend/app/app/__pycache__/
+backend/app/tv_series/__pycache__/
+backend/app/tv_series/base/__pycache__/
+backend/app/tv_series/base/models/__pycache__/
+backend/app/vikings_scraper/vikings_scraper/__pycache__/
+backend/app/tv_series/norsemans/__pycache__/
+backend/app/tv_series/vikings/__pycache__/
+backend/app/vikings_scraper/vikings_scraper/spiders/__pycache__/
+backend/app/tv_series/migrations/
