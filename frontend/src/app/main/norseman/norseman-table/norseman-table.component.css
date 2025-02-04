@@ -1,0 +1,78 @@
+/* Table Container */
+.entity-table {
+    width: 100%;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .entity-table__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .entity-table__header form {
+    width: 50%;
+  }
+  
+  .entity-table__header input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .entity-table__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .entity-table__table th,
+  .entity-table__table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .entity-table__table th {
+    background-color: #f4f4f4;
+  }
+  
+  .entity-table__table td img {
+    border-radius: 50%;
+    width: 50px;
+  }
+  
+  .entity-table__button {
+    padding: 6px 12px;
+    margin: 0 4px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .entity-table__button--new {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .entity-table__button--edit {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .entity-table__button--delete {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .entity-table__actions {
+    display: flex;
+    gap: 4px;
+  }
+  
+  mat-paginator {
+    margin-top: 20px;
+  }
+  

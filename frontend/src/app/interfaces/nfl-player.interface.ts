@@ -5,10 +5,14 @@ export interface NFLPlayer {
     age: number;
     experience: number;
     college: string;
-    name: string;  
-}
-
-export interface NflPlayerStats {
+    name: string;
+    photo: string;
+    stats: NFLPlayerStats[];
+    createdAt: string;
+    updatedAt: string;
+  }
+  
+  export interface NFLPlayerStats {
     id: number;
     playerId: number;
     season: number;
@@ -18,4 +22,5 @@ export interface NflPlayerStats {
     receivingYards: number;
     receivingTouchdowns: number;
     longestReception: number;
-}
+  }
+  

@@ -4,6 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { VikingService } from '../../../services/viking.service';
 import { Viking } from '../../../interfaces/viking.interface';
+import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
+
 
 @Component({
   standalone: false,
@@ -24,7 +26,18 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
   constructor(private vikingService: VikingService) { }
 
   ngOnInit(): void {
-    this.getAllVikings();
+    this.dataSource.filterPredicate = (data: Viking, filter: string) => {
+      const transformedFilter = filter.trim().toLowerCase();
+      const actorName = data.actorName.trim().toLowerCase();
+      const characterName = data.name.trim().toLowerCase();
+      const description = data.description.trim().toLowerCase();
+
+      return actorName.includes(transformedFilter) || 
+             characterName.includes(transformedFilter) || 
+             description.includes(transformedFilter);
+    };
+
+    this.getVikings(0, this.itemsPerPage);
   }
 
   ngAfterViewInit(): void {
@@ -32,12 +45,18 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  getAllVikings(): void {
-    this.vikingService.getAllVikings().subscribe((vikings) => {
-      this.dataSource.data = vikings;
-      this.totalItems = vikings.length;
+  getVikings(pageIndex: number, pageSize: number): void {
+    this.vikingService.getVikings(pageIndex, pageSize).subscribe((response: PaginatedEntity<Viking>) => {
+      if (response) {
+        console.log('Received vikings:', response.data);
+        this.dataSource.data = response.data;
+        this.totalItems = response.total_items;
+      } else {
+        console.warn('No response received');
+      }
     });
   }
+  
 
   deleteViking(id: number): void {
     this.vikingService.deleteViking(id).subscribe(() => {
@@ -56,7 +75,6 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
   applyPagination(event: any): void {
     const pageIndex = event.pageIndex;
     const pageSize = event.pageSize;
-    this.dataSource.paginator.pageIndex = pageIndex;
-    this.dataSource.paginator.pageSize = pageSize;
+    this.getVikings(pageIndex, pageSize);
   }
 }

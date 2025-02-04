@@ -8,7 +8,7 @@ import { NFLPlayer } from '../../interfaces/nfl-player.interface';
   templateUrl: './nfl-player.component.html',
   styleUrls: ['./nfl-player.component.css']
 })
-export class NflPlayerComponent {
+export class NFLPlayerComponent {
   ngOnInit(): void { 
   }
 }

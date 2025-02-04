@@ -1,23 +1,57 @@
-<h2>Edit NFL Player</h2>
-<form (ngSubmit)="saveNflPlayer()">
-  <label>Name:</label>
-  <input [(ngModel)]="nflplayer.name" name="player-name" required>
-  
-  <label>Number:</label>
-  <input [(ngModel)]="nflplayer.number" name="player-number" required>
-  
-  <label>Position:</label>
-  <input [(ngModel)]="nflplayer.position" name="player-position" required>
-  
-  <label>Age:</label>
-  <input [(ngModel)]="nflplayer.age" name="player-age" required>
-  
-  <label>Experience:</label>
-  <input [(ngModel)]="nflplayer.experience" name="player-experience" required>
-  
-  <label>College:</label>
-  <input [(ngModel)]="nflplayer.college" name="player-college" required>
-  
-  <button type="submit">Save</button>
-  <button type="button" (click)="cancel()">Cancel</button>
-</form>
+<div *ngIf="nflPlayer; else loading">
+  <div class="edit-container">
+    <div class="edit-header">
+      <h2>Edit NFL Player</h2>
+    </div>
+    <div class="edit-body">
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" [(ngModel)]="nflPlayer.name" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="number">Number</label>
+          <input type="number" id="number" [(ngModel)]="nflPlayer.number" name="number" required>
+        </div>
+
+        <div class="form-group">
+          <label for="position">Position</label>
+          <input type="text" id="position" [(ngModel)]="nflPlayer.position" name="position" required>
+        </div>
+
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" [(ngModel)]="nflPlayer.age" name="age" required>
+        </div>
+
+        <div class="form-group">
+          <label for="experience">Experience</label>
+          <input type="number" id="experience" [(ngModel)]="nflPlayer.experience" name="experience" required>
+        </div>
+
+        <div class="form-group">
+          <label for="college">College</label>
+          <input type="text" id="college" [(ngModel)]="nflPlayer.college" name="college" required>
+        </div>
+
+        <div class="form-group">
+          <label for="photo">Photo URL</label>
+          <input type="text" id="photo" [(ngModel)]="nflPlayer.photo" name="photo" required>
+        </div>
+
+        <button type="submit" class="save-button">Save</button>
+        <button type="button" class="cancel-button" (click)="goBack()">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="loading-container">
+    <p>Loading player details...</p>
+  </div>
+</ng-template>
+<div class="message-container" *ngIf="updateSuccess !== null">
+  <p *ngIf="updateSuccess">Update successfully completed!</p>
+  <p *ngIf="!updateSuccess">Failed to update the player. Please try again.</p>
+</div>

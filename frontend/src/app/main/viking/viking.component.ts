@@ -20,9 +20,9 @@ export class VikingComponent {
   }
 
   getVikings() {
-    this.vikingService.getAllVikings().subscribe((vikings: Viking[]) => {
-      this.vikings = vikings;
-    });
+    // this.vikingService.getAllVikings().subscribe((vikings: Viking[]) => {
+    //   this.vikings = vikings;
+    // });
   }
 
   getVikingById(id: number) {

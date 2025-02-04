@@ -5,6 +5,7 @@ import { VikingService } from '../../../services/viking.service';
 import { Viking } from '../../../interfaces/viking.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-viking-edit',
   templateUrl: './viking-edit.component.html',
   styleUrls: ['./viking-edit.component.scss']

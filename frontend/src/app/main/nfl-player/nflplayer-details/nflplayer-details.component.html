@@ -1,8 +1,44 @@
-<h2>{{ nflplayer?.name }}</h2>
-<p><strong>Number:</strong> {{ nflplayer?.number }}</p>
-<p><strong>Position:</strong> {{ nflplayer?.position }}</p>
-<p><strong>Age:</strong> {{ nflplayer?.age }}</p>
-<p><strong>Experience:</strong> {{ nflplayer?.experience }} years</p>
-<p><strong>College:</strong> {{ nflplayer?.college }}</p>
-
-<button (click)="back.emit()">Back to Table</button>
+<div class="details-container" *ngIf="nflPlayer">
+  <div class="details-header">
+    <h2>{{ nflPlayer?.name }}</h2>
+  </div>
+  <div class="details-body">
+    <img [src]="nflPlayer?.photo" alt="Player Photo" class="player-photo">
+    <ul>
+      <li><strong>Number:</strong> {{ nflPlayer?.number }}</li>
+      <li><strong>Position:</strong> {{ nflPlayer?.position }}</li>
+      <li><strong>Age:</strong> {{ nflPlayer?.age }}</li>
+      <li><strong>Experience:</strong> {{ nflPlayer?.experience }} years</li>
+      <li><strong>College:</strong> {{ nflPlayer?.college }}</li>
+    </ul>
+    <h3>Stats</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Season</th>
+          <th>Team</th>
+          <th>Games Played</th>
+          <th>Receptions</th>
+          <th>Receiving Yards</th>
+          <th>Touchdowns</th>
+          <th>Longest Reception</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let stat of nflPlayer?.stats">
+          <td>{{ stat.season }}</td>
+          <td>{{ stat.team }}</td>
+          <td>{{ stat.gamesPlayed }}</td>
+          <td>{{ stat.receptions }}</td>
+          <td>{{ stat.receivingYards }}</td>
+          <td>{{ stat.receivingTouchdowns }}</td>
+          <td>{{ stat.longestReception }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="back-button" (click)="goBack()">Back</button>
+</div>
+<div *ngIf="!nflPlayer">
+  <p>Loading player details...</p>
+</div>

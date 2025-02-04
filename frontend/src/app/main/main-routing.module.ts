@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { VikingTableComponent } from './viking/viking-table/viking-table.component';
-import { NflPlayerTableComponent } from './nfl-player/nflplayer-table/nflplayer-table.component';
+import { NFLPlayerTableComponent } from './nfl-player/nflplayer-table/nflplayer-table.component';
 import { NorsemanTableComponent } from './norseman/norseman-table/norseman-table.component';
 import { VikingDetailsComponent } from './viking/viking-details/viking-details.component';
-import { NflPlayerDetailsComponent } from './nfl-player/nflplayer-details/nflplayer-details.component';
+import { NFLPlayerDetailsComponent } from './nfl-player/nflplayer-details/nflplayer-details.component';
 import { NorsemanDetailsComponent } from './norseman/norseman-details/norseman-details.component';
 import { VikingEditComponent } from './viking/viking-edit/viking-edit.component';
-import { NflPlayerEditComponent } from './nfl-player/nflplayer-edit/nflplayer-edit.component';
+import { NFLPlayerEditComponent } from './nfl-player/nflplayer-edit/nflplayer-edit.component';
 import { NorsemanEditComponent } from './norseman/norseman-edit/norseman-edit.component';
 import { MainComponent } from './main.component';
 import { VikingFormComponent } from './viking/viking-form/viking-form.component';
@@ -38,15 +38,15 @@ const routes: Routes = [{
     // Routes for NFL Player domain
     {
       path: 'nflplayers',
-      component: NflPlayerTableComponent
+      component: NFLPlayerTableComponent
     },
     {
       path: 'nflplayers/details/:id',
-      component: NflPlayerDetailsComponent
+      component: NFLPlayerDetailsComponent
     },
     {
       path: 'nflplayers/edit/:id',
-      component: NflPlayerEditComponent
+      component: NFLPlayerEditComponent
     },
 
     // Routes for Norseman domain
