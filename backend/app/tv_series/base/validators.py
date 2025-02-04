@@ -9,7 +9,7 @@ class BaseValidator:
 
     @staticmethod
     def validate_id(model_id):
-        if not model_id.isdigit():
+        if not str(model_id).isdigit():
             return False, "ID is not valid, it should be a number"
         return True, None
 

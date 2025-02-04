@@ -1,3 +1,5 @@
+import re
+
 from tv_series.base.validators import BaseValidator
 
 
@@ -21,9 +23,9 @@ class VikingValidator(BaseValidator):
 
     def validate(self):
         self.errors = []
-        self.validate_name()
+        self.validate_name(self.fields['name'])
         self.validate_description()
-        self.validate_photo_url()
+        self.validate_photo_url(self.fields['photo'])
         self.validate_actor_name()
 
         if self.errors:

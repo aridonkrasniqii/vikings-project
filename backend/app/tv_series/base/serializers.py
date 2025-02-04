@@ -1,10 +1,10 @@
-from rest_framework import serializers
 
 from tv_series.base.models.base_models import VikingBase
 from tv_series.nfl_players.nfl_players_model import NFLPlayer, NflPlayerStats
 from tv_series.norsemans.norsemen_models import Norseman
 from tv_series.vikings.vikings_model import Viking
 
+from rest_framework import serializers
 
 class VikingBaseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,13 +13,15 @@ class VikingBaseSerializer(serializers.ModelSerializer):
 
 class VikingSerializer(VikingBaseSerializer):
     actor_name = serializers.CharField(max_length=255)
+    description = serializers.CharField(max_length=1000)
 
     class Meta(VikingBaseSerializer.Meta):
         model = Viking
         fields = '__all__'
 
-class NorsemenSerializer(VikingBaseSerializer):
+class NorsemanSerializer(VikingBaseSerializer):
     actor_name = serializers.CharField(max_length=255)
+    description = serializers.CharField(max_length=1000)
 
     class Meta(VikingBaseSerializer.Meta):
         model = Norseman
@@ -32,3 +34,11 @@ class NFLPlayerSerializer(VikingBaseSerializer):
     class Meta(VikingBaseSerializer.Meta):
         model = NFLPlayer
         fields = '__all__'
+
+class PaginatedVikingSerializer(serializers.Serializer):
+    total_items = serializers.IntegerField()
+    total_pages = serializers.IntegerField()
+    current_page = serializers.IntegerField()
+    limit = serializers.IntegerField()
+    data = VikingSerializer(many=True)
+

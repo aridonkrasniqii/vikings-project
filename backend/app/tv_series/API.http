@@ -3,9 +3,32 @@ GET http://localhost:8000/api/vikings/
 Content-Type: application/json
 
 ###
+GET http://localhost:8000/api/vikings/?page=1&limit=10
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/vikings/?q=Aridon
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/vikings/?desc=created_at
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/vikings/?asc=name
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/vikings/?page=2&limit=20&q=Aridon&desc=created_at
+Content-Type: application/json
+
+###
+GET http://localhost:8000/api/vikings/?search_fields=description&q=A
+Content-Type: application/json
+
 
 ### Get Viking by ID
-GET http://localhost:8000/api/vikings/1
+GET http://localhost:8000/api/vikings/5
 Content-Type: application/json
 
 ###
@@ -15,8 +38,8 @@ POST http://localhost:8000/api/vikings/
 Content-Type: application/json
 
 {
-    "name": "Aridon",
-    "actor_name": "Aridon",
+    "name": "Haki",
+    "actor_name": "Haki",
     "description": "P9",
     "photo": "https://images.com"
 }
@@ -24,7 +47,7 @@ Content-Type: application/json
 ###
 
 ### Update a Viking
-PUT http://localhost:8000/api/vikings/1
+PUT http://localhost:8000/api/vikings/5
 Content-Type: application/json
 
 {
@@ -37,7 +60,7 @@ Content-Type: application/json
 ###
 
 ### Delete a Viking
-DELETE http://localhost:8000/api/vikings/1
+DELETE http://localhost:8000/api/vikings/8
 Content-Type: application/json
 
 ###

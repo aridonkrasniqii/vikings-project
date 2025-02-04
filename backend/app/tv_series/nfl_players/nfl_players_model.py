@@ -1,14 +1,15 @@
 from django.db import models
 
+from tv_series.base.models.base_models import VikingBase
 from tv_series.nfl_players.nfl_players_manager import NflPlayerManager
 
 
-class NFLPlayer(models.Model):
-    number = models.IntegerField()
-    position = models.CharField(max_length=100)
-    age = models.IntegerField()
-    experience = models.IntegerField()  # Years in the NFL
-    college = models.CharField(max_length=255)
+class NFLPlayer(VikingBase):
+    number = models.IntegerField(null=True)
+    position = models.CharField(max_length=100, null=True)
+    age = models.IntegerField(null=True)
+    experience = models.IntegerField(null=True)  # Years in the NFL
+    college = models.CharField(max_length=255, null=True)
 
     objects = NflPlayerManager()
 

@@ -1,57 +1,50 @@
 from rest_framework import status
 
-from tv_series.base.models.custom_response import CustomResponse
+from tv_series.base.models.entity_response import EntityResponse
+from tv_series.base.serializers import VikingSerializer, PaginatedVikingSerializer
+from tv_series.base.services import BaseService
 from tv_series.base.validators import BaseValidator
 from tv_series.vikings.vikings_model import Viking
 from tv_series.vikings.vikings_validator import VikingValidator
 
 
-class VikingsService:
-    def __init__(self):
-        pass
+class VikingsService(BaseService):
 
-    def get_all(self):
-        vikings = Viking.objects.all()
-        return CustomResponse(vikings, status.HTTP_200_OK)
+    VIKING_CREATED = 'Vikings created'
+    VIKING_UPDATED = 'Vikings updated'
+    VIKING_DELETED = 'Vikings deleted'
+    VIKING_NOT_FOUND = 'Vikings not found'
+
+    def __init__(self):
+        super().__init__(VikingSerializer, PaginatedVikingSerializer)
+
+    def get_all(self, request):
+        return self.paginated_response(Viking.objects.get_paginated_vikings(request, view=self))
 
     def get_by_id(self, viking_id):
-        validation_response = self._validate_id(viking_id)
-        if validation_response:
-            return validation_response
+        self._validate_id(viking_id)
 
         viking = Viking.objects.get_viking_by_id(viking_id)
+
         if viking:
-            return CustomResponse(viking, status.HTTP_200_OK)
-        return CustomResponse(None, status.HTTP_404_NOT_FOUND, "Viking not found")
+            return self.response(viking, status.HTTP_200_OK)
+        return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_CREATED)
 
     def create(self, data):
-        validation_response = self._validate_data(data)
-        if validation_response:
-            return validation_response
-
-        created_viking = Viking.objects.create_viking(
-            data['name'], data['description'], data['photo'], data['actor_name']
-        )
-        return CustomResponse(created_viking, status.HTTP_201_CREATED)
+        self._validate_data(data)
+        created_viking = Viking.objects.create_viking(data)
+        return self.response(created_viking, status.HTTP_201_CREATED)
 
     def update(self, viking_id, data):
-        # Generalized ID validation and response
-        validation_response = self._validate_id(viking_id)
-        if validation_response:
-            return validation_response
+        self._validate_id(viking_id)
 
         viking = Viking.objects.get_viking_by_id(viking_id)
         if not viking:
-            return CustomResponse(None, status.HTTP_404_NOT_FOUND, "Viking not found")
+            return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_NOT_FOUND)
 
-        validation_response = self._validate_data(data)
-        if validation_response:
-            return validation_response
-
-        updated_viking = Viking.objects.update_viking(
-            viking, data['name'], data['description'], data['photo'], data['actor_name']
-        )
-        return CustomResponse(updated_viking, status.HTTP_200_OK)
+        self._validate_data(data)
+        updated_viking = Viking.objects.update_viking(data)
+        return self.response(updated_viking, status.HTTP_200_OK, self.VIKING_UPDATED)
 
     def delete(self, viking_id):
         validation_response = self._validate_id(viking_id)
@@ -60,15 +53,15 @@ class VikingsService:
 
         viking = Viking.objects.get_viking_by_id(viking_id)
         if not viking:
-            return CustomResponse(None, status.HTTP_404_NOT_FOUND, "Viking not found")
+            return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_NOT_FOUND)
 
         Viking.objects.delete_viking(viking)
-        return CustomResponse(None, status.HTTP_204_NO_CONTENT)
+        return self.response(viking, status.HTTP_200_OK, self.VIKING_DELETED)
 
     def _validate_id(self, viking_id):
         is_valid_id, error_message = BaseValidator.validate_id(viking_id)
         if not is_valid_id:
-            return CustomResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
+            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
         return None
 
     def _validate_data(self, data):
@@ -81,5 +74,5 @@ class VikingsService:
         is_valid, error_message = validator.validate()
 
         if not is_valid:
-            return CustomResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
+            return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
         return None
