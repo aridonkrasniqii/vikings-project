@@ -2,19 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VikingService } from '../../../services/viking.service';
-import { Viking } from '../../../interfaces/viking.interface';
+import { FrontendViking } from '../../../models/viking.model'; 
 
 @Component({
   standalone: false,
   selector: 'app-viking-edit',
   templateUrl: './viking-edit.component.html',
-  styleUrls: ['./viking-edit.component.scss']
+  styleUrls: ['./viking-edit.component.css']
 })
 export class VikingEditComponent implements OnInit {
   editForm: FormGroup;
   vikingId: number;
-  viking: Viking;
+  viking: FrontendViking;
   formStatus: { type: string; message: string } | null = null;
+  loading: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -33,16 +34,25 @@ export class VikingEditComponent implements OnInit {
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       actorName: ['', Validators.required],
-      characterName: ['', Validators.required],
       description: ['', Validators.required],
-      pictureUrl: ['', [Validators.required, Validators.pattern('https?://.+')]]
+      photo: ['', Validators.required ] // Validators.pattern('https?://.+')]
     });
   }
 
   loadViking(): void {
-    this.vikingService.getVikingById(this.vikingId).subscribe((viking) => {
-      this.viking = viking;
-      this.editForm.patchValue(viking);
+    this.vikingService.getVikingById(this.vikingId).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          this.viking = FrontendViking.fromBackend(response.data[0]);
+          this.editForm.patchValue(this.viking);
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading Viking:', error);
+        this.formStatus = { type: 'error', message: `Failed to load Viking: ${error.message}` };
+        this.loading = false;
+      }
     });
   }
 
@@ -51,16 +61,27 @@ export class VikingEditComponent implements OnInit {
       return;
     }
 
-    this.vikingService.updateViking(this.vikingId, this.editForm.value).subscribe(
-      () => {
+    this.updateViking();
+  }
+
+  private updateViking() { 
+    const updatedViking = new FrontendViking({
+      name: this.editForm.value.name,
+      actorName: this.editForm.value.actorName,
+      description: this.editForm.value.description,
+      photo: this.editForm.value.pictureUrl
+    });
+
+    this.vikingService.updateViking(this.vikingId, updatedViking).subscribe({
+      next: () => {
         this.formStatus = { type: 'success', message: 'Viking updated successfully!' };
         setTimeout(() => {
           this.router.navigate(['/vikings']);
         }, 2000);
       },
-      (error) => {
+      error: (error) => {
         this.formStatus = { type: 'error', message: `Update failed: ${error.message}` };
       }
-    );
+    });
   }
 }

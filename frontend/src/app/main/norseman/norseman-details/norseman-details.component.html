@@ -14,7 +14,7 @@
       <div>
         <strong>Description:</strong> {{norseman.description}}
       </div>
-      <button class="entity-table__button entity-table__button--edit" [routerLink]="['../edit', norseman.id]">Edit</button>
+      <button class="entity-table__button entity-table__button--edit" [routerLink]="['/norsemans/edit', norseman.id]">Edit</button>
       <button class="entity-table__button entity-table__button--back" (click)="goBack()">Back</button>
     </div>
   </div>

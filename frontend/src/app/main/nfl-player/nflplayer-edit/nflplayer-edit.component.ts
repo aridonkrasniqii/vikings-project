@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { NFLPlayerService } from '../../../services/nfl-player.service';
-import { NFLPlayer, NFLPlayerStats } from '../../../interfaces/nfl-player.interface';
+import { FrontendNFLPlayer } from '../../../models/nfl-players.model';
+
 
 @Component({
   standalone: false,
@@ -11,78 +12,86 @@ import { NFLPlayer, NFLPlayerStats } from '../../../interfaces/nfl-player.interf
   styleUrls: ['./nflplayer-edit.component.css']
 })
 export class NFLPlayerEditComponent implements OnInit {
-  nflPlayer: NFLPlayer | undefined;
-  updateSuccess: boolean | null = null;
+  editForm: FormGroup;
+  playerId: number;
+  nflPlayer: FrontendNFLPlayer;
+  formStatus: { type: string; message: string } | null = null;
+  loading: boolean = true;
+  updateSuccess: boolean | null = null; 
 
   constructor(
+    private fb: FormBuilder,
     private route: ActivatedRoute,
-    private nflPlayerService: NFLPlayerService,
-    private location: Location,
-    private router: Router
-  ) { }
+    private router: Router,
+    private playerService: NFLPlayerService
+  ) {}
 
   ngOnInit(): void {
-    this.getNFLPlayer();
+    this.playerId = +this.route.snapshot.paramMap.get('id');
+    this.createForm();
+    this.loadPlayer();
   }
 
-  getNFLPlayer(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.nflPlayerService.getNFLPlayerById(id)
-      .subscribe(response => {
-        if (response) {
-          this.nflPlayer = this.mapNFLPlayer(response.data);
-        } else {
-          console.warn('No player data received');
+  createForm(): void {
+    this.editForm = this.fb.group({
+      name: ['', Validators.required],
+      number: ['', Validators.required],
+      position: ['', Validators.required],
+      age: ['', Validators.required],
+      experience: ['', Validators.required],
+      college: ['', Validators.required],
+      photo: ['', Validators.required ] // Validators.pattern('https?://.+')]
+    });
+  }
+
+  loadPlayer(): void {
+    this.playerService.getNFLPlayerById(this.playerId).subscribe({
+      next: (response) => {
+        if (response && response.data) {
+          this.nflPlayer = FrontendNFLPlayer.fromBackend(response.data[0]);
+          this.editForm.patchValue(this.nflPlayer);
         }
-      });
-  }
-
-  mapNFLPlayer(item: any): NFLPlayer {
-    return {
-      id: item.id,
-      number: item.number,
-      position: item.position,
-      age: item.age,
-      experience: item.experience,
-      college: item.college,
-      name: item.name,
-      photo: item.photo,
-      stats: item.stats.map((stat: any) => this.mapNFLPlayerStats(stat)),
-      createdAt: item.created_at,
-      updatedAt: item.updated_at
-    };
-  }
-
-  mapNFLPlayerStats(item: any): NFLPlayerStats {
-    return {
-      id: item.id,
-      playerId: item.player_id,
-      season: item.season,
-      team: item.team,
-      gamesPlayed: item.games_played,
-      receptions: item.receptions,
-      receivingYards: item.receiving_yards,
-      receivingTouchdowns: item.receiving_touchdowns,
-      longestReception: item.longest_reception
-    };
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading player:', error);
+        this.formStatus = { type: 'error', message: `Failed to load player: ${error.message}` };
+        this.loading = false;
+      }
+    });
   }
 
   onSubmit(): void {
-    if (this.nflPlayer) {
-      this.nflPlayerService.updateNFLPlayer(this.nflPlayer.id, this.nflPlayer)
-        .subscribe(response => {
-          if (response) {
-            this.updateSuccess = true;
-            setTimeout(() => this.router.navigate(['/nflplayers']), 2000);
-          } else {
-            this.updateSuccess = false;
-            setTimeout(() => this.updateSuccess = null, 2000);
-          }
-        });
+    if (this.editForm.invalid) {
+      return;
     }
+
+    this.updatePlayer();
   }
 
-  goBack(): void {
-    this.location.back();
+  private updatePlayer() { 
+    const updatedPlayer = new FrontendNFLPlayer({
+      name: this.editForm.value.name,
+      number: this.editForm.value.number,
+      position: this.editForm.value.position,
+      age: this.editForm.value.age,
+      experience: this.editForm.value.experience,
+      college: this.editForm.value.college,
+      photo: this.editForm.value.photo
+    });
+
+    this.playerService.updateNFLPlayer(this.playerId, updatedPlayer).subscribe({
+      next: () => {
+        this.updateSuccess = true;
+        this.formStatus = { type: 'success', message: 'Player updated successfully!' };
+        setTimeout(() => {
+          this.router.navigate(['/nflplayers']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.updateSuccess = false;
+        this.formStatus = { type: 'error', message: `Update failed: ${error.message}` };
+      }
+    });
   }
 }

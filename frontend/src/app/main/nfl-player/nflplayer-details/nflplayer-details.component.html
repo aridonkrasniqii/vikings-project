@@ -12,30 +12,35 @@
       <li><strong>College:</strong> {{ nflPlayer?.college }}</li>
     </ul>
     <h3>Stats</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Season</th>
-          <th>Team</th>
-          <th>Games Played</th>
-          <th>Receptions</th>
-          <th>Receiving Yards</th>
-          <th>Touchdowns</th>
-          <th>Longest Reception</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let stat of nflPlayer?.stats">
-          <td>{{ stat.season }}</td>
-          <td>{{ stat.team }}</td>
-          <td>{{ stat.gamesPlayed }}</td>
-          <td>{{ stat.receptions }}</td>
-          <td>{{ stat.receivingYards }}</td>
-          <td>{{ stat.receivingTouchdowns }}</td>
-          <td>{{ stat.longestReception }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="nflPlayer?.stats?.length > 0; else noStats">
+      <table>
+        <thead>
+          <tr>
+            <th>Season</th>
+            <th>Team</th>
+            <th>Games Played</th>
+            <th>Receptions</th>
+            <th>Receiving Yards</th>
+            <th>Touchdowns</th>
+            <th>Longest Reception</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stat of nflPlayer?.stats">
+            <td>{{ stat.season }}</td>
+            <td>{{ stat.team }}</td>
+            <td>{{ stat.gamesPlayed }}</td>
+            <td>{{ stat.receptions }}</td>
+            <td>{{ stat.receivingYards }}</td>
+            <td>{{ stat.receivingTouchdowns }}</td>
+            <td>{{ stat.longestReception }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ng-template #noStats>
+      <p>No stats available.</p>
+    </ng-template>
   </div>
   <button class="back-button" (click)="goBack()">Back</button>
 </div>

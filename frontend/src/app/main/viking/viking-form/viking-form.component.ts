@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VikingService } from '../../../services/viking.service';
+import { FrontendViking, BackendViking } from '../../../models/viking.model'; // Import models
 import { stringPatternValidator } from '../../../validators/pattern-string.validator';
 
 @Component({
   standalone: false,
   selector: 'app-viking-form',
   templateUrl: './viking-form.component.html',
-  styleUrls: ['./viking-form.component.scss']
+  styleUrls: ['./viking-form.component.css']
 })
 export class VikingFormComponent implements OnInit {
   createForm: FormGroup;
@@ -29,8 +30,8 @@ export class VikingFormComponent implements OnInit {
     this.createForm = this.fb.group({
       name: ['', [Validators.required, stringPatternValidator]],
       actorName: ['', [Validators.required, stringPatternValidator]],
-      characterName: ['', [Validators.required, stringPatternValidator]],
-      description: ['', [Validators.required]]
+      description: ['', [Validators.required]],
+      pictureUrl: ['', Validators.required]
     });
   }
 
@@ -39,7 +40,17 @@ export class VikingFormComponent implements OnInit {
       return;
     }
 
-    this.vikingService.createViking(this.createForm.value).subscribe({
+    this.createViking()
+  }
+
+  private createViking() {
+    const frontendViking = new FrontendViking({
+      name: this.createForm.value.name,
+      actorName: this.createForm.value.actorName,
+      description: this.createForm.value.description,
+      photo: this.createForm.value.pictureUrl
+    });
+    this.vikingService.createViking(frontendViking).subscribe({
       next: () => {
         this.successMessage = 'Viking created successfully!';
         setTimeout(() => {

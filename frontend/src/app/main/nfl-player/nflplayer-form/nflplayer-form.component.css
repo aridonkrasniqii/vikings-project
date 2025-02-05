@@ -1,5 +1,5 @@
-.edit-form {
-    max-width: 600px;
+.form-container {
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
     background-color: #f9f9f9;
@@ -7,7 +7,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .edit-form h2 {
+  h2 {
     margin-bottom: 1.5rem;
     text-align: center;
     color: #333;
@@ -34,11 +34,6 @@
     box-sizing: border-box;
   }
   
-  .form-group textarea {
-    resize: vertical;
-    height: 150px;
-  }
-  
   button[type='submit'] {
     width: 100%;
     padding: 0.75rem;
@@ -60,10 +55,28 @@
     cursor: not-allowed;
   }
   
+  .cancel-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    color: #fff;
+    background-color: #6c757d;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .cancel-button:hover {
+    background-color: #5a6268;
+  }
+  
   .form-status {
-    margin-bottom: 1rem;
+    margin-top: 1.5rem;
     padding: 0.75rem;
     border-radius: 0.25rem;
+    text-align: center;
   }
   
   .form-status.success {
@@ -74,5 +87,5 @@
   .form-status.error {
     background-color: #f8d7da;
     color: #721c24;
-}
+  }
   

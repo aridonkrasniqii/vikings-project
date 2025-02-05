@@ -24,3 +24,4 @@ export interface NFLPlayer {
     longestReception: number;
   }
   
+

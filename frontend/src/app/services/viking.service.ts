@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { BaseService } from './base.service';
-import { Viking } from '../interfaces/viking.interface';
-import { of } from 'rxjs';
+
 import { PaginatedEntity } from '../interfaces/paginated.entity.interface';
+import { ResponseEntity } from '../interfaces/response.entity.interface';
+import { BackendViking, FrontendViking } from '../models/viking.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -16,26 +17,20 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class VikingService extends BaseService<Viking> {
+export class VikingService extends BaseService<BackendViking> {
   private resource = 'vikings';
 
   constructor(http: HttpClient) {
     super(http);
   }
 
-  getAllVikings(): Observable<Viking[]> {
-    return this.getAllModels(this.resource, httpOptions).pipe(
-      map(response => response.data.map(item => this.transformViking(item)))
-    );
+  getVikingById(id: number): Observable<ResponseEntity<BackendViking>> {
+    return this.getBy(`${this.resource}/${id}`).pipe(
+      map(response => response), 
+    catchError(err =>  { console.log(err); return of(null)} ));
   }
 
-  getVikingById(id: number): Observable<Viking> {
-    return this.getBy(`${this.resource}/${id}`, httpOptions).pipe(
-      map(response => this.transformViking(response))
-    );
-  }
-
-  getVikings(pageIndex: number, pageSize: number): Observable<PaginatedEntity<Viking>> {
+  getVikings(pageIndex: number, pageSize: number): Observable<PaginatedEntity<BackendViking>> {
     return this.getAllModels(this.resource, {
       params: {
         pageIndex: pageIndex.toString(),
@@ -43,16 +38,7 @@ export class VikingService extends BaseService<Viking> {
       },
       ...httpOptions
     }).pipe(
-      map(response => {
-        const transformedResponse: PaginatedEntity<Viking> = {
-          total_items: response.total_items,
-          total_pages: response.total_pages,
-          current_page: response.current_page,
-          limit: response.limit,
-          data: response.data.map(item => this.transformViking(item))
-        };
-        return transformedResponse;
-      }),
+      map(response => response),
       catchError(error => {
         console.error('Error in getVikings:', error);
         return of(null); 
@@ -60,39 +46,45 @@ export class VikingService extends BaseService<Viking> {
     );
   }
 
-  getVikingByName(name: string): Observable<Viking> {
+  getVikingByName(name: string): Observable<ResponseEntity<BackendViking>> {
     return this.getBy(`${this.resource}/name/${name}`, httpOptions).pipe(
-      map(response => this.transformViking(response))
+      map(response => response),
+      catchError(error => {
+        console.error('Error in getVikingByName:', error);
+        return of(null); 
+      })
     );
   }
 
-  createViking(data: Viking): Observable<Viking> {
-    return this.postModel(this.resource, data).pipe(
-      map(response => this.transformViking(response))
+  createViking(data: FrontendViking): Observable<ResponseEntity<BackendViking>> {
+    return this.postModel(this.resource, FrontendViking.toBackend(data)).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error in createViking:', error);
+        return of(null); 
+      })
     );
   }
 
-  updateViking(id: number, data: Partial<Viking>): Observable<Viking> {
-    return this.putModel(`${this.resource}/${id}`, data).pipe(
-      map(response => this.transformViking(response))
+  updateViking(id: number, data: FrontendViking): Observable<ResponseEntity<BackendViking>> {
+    return this.putModel(`${this.resource}/${id}`, FrontendViking.toBackend(data)).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error in updateViking:', error);
+        return of(null); 
+      })
     );
   }
 
-  deleteViking(id: number): Observable<Viking> {
+  deleteViking(id: number): Observable<ResponseEntity<BackendViking>> {
     return this.deleteModel(`${this.resource}/${id}`).pipe(
-      map(response => this.transformViking(response))
+      map(response => response),
+      catchError(error => {
+        console.error('Error in deleteViking:', error);
+        return of(null); 
+      })
     );
   }
 
-  private transformViking(item: any): Viking {
-    return {
-      id: item.id,
-      name: item.name,
-      photo: item.photo,
-      actorName: item.actor_name,
-      description: item.description,
-      createdAt: item.created_at,
-      updatedAt: item.updated_at
-    };
-  }
+
 }

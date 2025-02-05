@@ -12,6 +12,8 @@ import { NFLPlayerEditComponent } from './nfl-player/nflplayer-edit/nflplayer-ed
 import { NorsemanEditComponent } from './norseman/norseman-edit/norseman-edit.component';
 import { MainComponent } from './main.component';
 import { VikingFormComponent } from './viking/viking-form/viking-form.component';
+import { NorsemanFormComponent } from './norseman/norseman-form/norseman-form.component';
+import { NFLPlayerFormComponent } from './nfl-player/nflplayer-form/nflplayer-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -48,6 +50,10 @@ const routes: Routes = [{
       path: 'nflplayers/edit/:id',
       component: NFLPlayerEditComponent
     },
+    {
+      path: 'nflplayers/form',
+      component: NFLPlayerFormComponent
+    },
 
     // Routes for Norseman domain
     {
@@ -61,6 +67,10 @@ const routes: Routes = [{
     {
       path: 'norsemans/edit/:id',
       component: NorsemanEditComponent
+    },
+    {
+      path: 'norsemans/form',
+      component: NorsemanFormComponent
     },
 
     { path: '', redirectTo: '/vikings', pathMatch: 'full' },

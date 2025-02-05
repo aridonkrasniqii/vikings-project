@@ -16,13 +16,6 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="characterName">Character Name</label>
-      <input id="characterName" formControlName="characterName" type="text" />
-      <div *ngIf="editForm.get('characterName').invalid && editForm.get('characterName').touched" class="error-message">
-        Character Name is required.
-      </div>
-    </div>
-    <div class="form-group">
       <label for="description">Description</label>
       <textarea id="description" formControlName="description"></textarea>
       <div *ngIf="editForm.get('description').invalid && editForm.get('description').touched" class="error-message">
@@ -30,9 +23,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="pictureUrl">Picture URL</label>
-      <input id="pictureUrl" formControlName="pictureUrl" type="text" />
-      <div *ngIf="editForm.get('pictureUrl').invalid && editForm.get('pictureUrl').touched" class="error-message">
+      <label for="photo">Picture URL</label>
+      <input id="photo" formControlName="photo" type="text" />
+      <div *ngIf="editForm.get('photo').invalid && editForm.get('photo').touched" class="error-message">
         Valid Picture URL is required.
       </div>
     </div>

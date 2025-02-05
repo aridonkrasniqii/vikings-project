@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NorsemanService } from '../../../services/norseman.service';
-import { Norseman } from '../../../interfaces/norseman.interface';
+import { FrontendNorseman } from '../../../models/norseman.model';
+
 
 @Component({
   standalone: false,
@@ -10,7 +11,7 @@ import { Norseman } from '../../../interfaces/norseman.interface';
   styleUrls: ['./norseman-details.component.scss']
 })
 export class NorsemanDetailsComponent implements OnInit {
-  norseman: Norseman;
+  norseman: FrontendNorseman;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,8 +25,8 @@ export class NorsemanDetailsComponent implements OnInit {
 
   getNorsemanDetails(): void {
     const id = +this.route.snapshot.paramMap.get('id');
-    this.norsemanService.getNorsemanById(id).subscribe((norseman) => {
-      this.norseman = norseman;
+    this.norsemanService.getNorsemanById(id).subscribe((response) => {
+      this.norseman = FrontendNorseman.fromBackend(response.data);
     });
   }
 

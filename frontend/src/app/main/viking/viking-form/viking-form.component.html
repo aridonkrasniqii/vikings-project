@@ -18,14 +18,6 @@
     </div>
 
     <div class="form-group">
-      <label for="characterName">Character Name</label>
-      <input id="characterName" formControlName="characterName" type="text" />
-      <div *ngIf="createForm.get('characterName').invalid && createForm.get('characterName').touched" class="error-message">
-        Character Name is required.
-      </div>
-    </div>
-
-    <div class="form-group">
       <label for="description">Description</label>
       <textarea id="description" formControlName="description"></textarea>
       <div *ngIf="createForm.get('description').invalid && createForm.get('description').touched" class="error-message">

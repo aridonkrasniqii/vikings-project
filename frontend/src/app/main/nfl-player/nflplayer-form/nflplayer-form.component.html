@@ -1,0 +1,75 @@
+<div class="form-container">
+    <h2>Create NFL Player</h2>
+    <form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" formControlName="name" type="text" />
+      </div>
+      <div class="form-group">
+        <label for="number">Number</label>
+        <input id="number" formControlName="number" type="number" />
+      </div>
+      <div class="form-group">
+        <label for="position">Position</label>
+        <input id="position" formControlName="position" type="text" />
+      </div>
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input id="age" formControlName="age" type="number" />
+      </div>
+      <div class="form-group">
+        <label for="experience">Experience</label>
+        <input id="experience" formControlName="experience" type="number" />
+      </div>
+      <div class="form-group">
+        <label for="college">College</label>
+        <input id="college" formControlName="college" type="text" />
+      </div>
+      <div class="form-group">
+        <label for="photo">Photo URL</label>
+        <input id="photo" formControlName="photo" type="text" />
+      </div>
+  
+      <div formArrayName="stats">
+        <div *ngFor="let stat of stats.controls; let i=index" [formGroupName]="i">
+          <h3>Stat {{ i + 1 }}</h3>
+          <div class="form-group">
+            <label for="season">Season</label>
+            <input id="season" formControlName="season" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="team">Team</label>
+            <input id="team" formControlName="team" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="gamesPlayed">Games Played</label>
+            <input id="gamesPlayed" formControlName="gamesPlayed" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="receptions">Receptions</label>
+            <input id="receptions" formControlName="receptions" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="receivingYards">Receiving Yards</label>
+            <input id="receivingYards" formControlName="receivingYards" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="receivingTouchdowns">Receiving Touchdowns</label>
+            <input id="receivingTouchdowns" formControlName="receivingTouchdowns" type="number" />
+          </div>
+          <div class="form-group">
+            <label for="longestReception">Longest Reception</label>
+            <input id="longestReception" formControlName="longestReception" type="number" />
+          </div>
+        </div>
+      </div>
+  
+      <button type="submit" class="save-button" [disabled]="playerForm.invalid">Save</button>
+      <button type="button" class="cancel-button" (click)="goBack()">Cancel</button>
+    </form>
+  
+    <div *ngIf="formStatus" class="form-status" [ngClass]="formStatus.type">
+      {{ formStatus.message }}
+    </div>
+  </div>
+  

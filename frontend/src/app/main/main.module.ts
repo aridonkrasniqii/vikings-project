@@ -27,6 +27,8 @@ import { VikingFormComponent } from './viking/viking-form/viking-form.component'
 import { NFLPlayerTableComponent } from './nfl-player/nflplayer-table/nflplayer-table.component';
 import { NFLPlayerService } from '../services/nfl-player.service';
 import { NFLPlayerDetailsComponent } from './nfl-player/nflplayer-details/nflplayer-details.component';
+import { NFLPlayerFormComponent } from './nfl-player/nflplayer-form/nflplayer-form.component';
+import { NorsemanFormComponent } from './norseman/norseman-form/norseman-form.component';
 
 
 @NgModule({
@@ -40,10 +42,12 @@ import { NFLPlayerDetailsComponent } from './nfl-player/nflplayer-details/nflpla
     NorsemanDetailsComponent,
     NorsemanEditComponent,
     NorsemanTableComponent,
+    NorsemanFormComponent,
     NFLPlayerComponent,
     NFLPlayerDetailsComponent,
     NFLPlayerTableComponent,
     NFLPlayerEditComponent, 
+    NFLPlayerFormComponent,
     MainComponent
 ],
   imports: [

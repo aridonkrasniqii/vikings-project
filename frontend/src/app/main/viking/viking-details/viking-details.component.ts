@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VikingService } from '../../../services/viking.service';
-import { Viking } from '../../../interfaces/viking.interface';
+import { FrontendViking } from '../../../models/viking.model'; 
 
 @Component({
   standalone: false,
@@ -10,7 +10,7 @@ import { Viking } from '../../../interfaces/viking.interface';
   styleUrls: ['./viking-details.component.scss']
 })
 export class VikingDetailsComponent implements OnInit {
-  viking: Viking;
+  viking: FrontendViking;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,8 +24,10 @@ export class VikingDetailsComponent implements OnInit {
 
   getVikingDetails(): void {
     const id = +this.route.snapshot.paramMap.get('id');
-    this.vikingService.getVikingById(id).subscribe((viking) => {
-      this.viking = viking;
+    this.vikingService.getVikingById(id).subscribe((response) => {
+      if (response && response.data) {
+        this.viking = FrontendViking.fromBackend(response.data[0]); 
+      }
     });
   }
 

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Norseman } from '../../interfaces/norseman.interface';
 
 @Component({
   standalone: false,

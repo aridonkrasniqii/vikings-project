@@ -3,8 +3,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NFLPlayerService } from '../../../services/nfl-player.service';
-import { NFLPlayer } from '../../../interfaces/nfl-player.interface';
 import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
+import { BackendNFLPlayer, FrontendNFLPlayer } from '../../../models/nfl-players.model';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface'
 })
 export class NFLPlayerTableComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['photo', 'name', 'number', 'position', 'age', 'experience', 'college', 'actions'];
-  dataSource = new MatTableDataSource<NFLPlayer>();
+  dataSource = new MatTableDataSource<FrontendNFLPlayer>();
   searchTerm: string = '';
   totalItems = 0;
   itemsPerPage = 10;
@@ -26,7 +26,7 @@ export class NFLPlayerTableComponent implements OnInit, AfterViewInit {
   constructor(private nflPlayerService: NFLPlayerService) { }
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: NFLPlayer, filter: string) => {
+    this.dataSource.filterPredicate = (data: FrontendNFLPlayer, filter: string) => {
       const transformedFilter = filter.trim().toLowerCase();
       const name = data.name.trim().toLowerCase();
       const position = data.position.trim().toLowerCase();
@@ -46,10 +46,9 @@ export class NFLPlayerTableComponent implements OnInit, AfterViewInit {
   }
 
   getNFLPlayers(pageIndex: number, pageSize: number): void {
-    this.nflPlayerService.getNFLPlayers(pageIndex, pageSize).subscribe((response: PaginatedEntity<NFLPlayer>) => {
+    this.nflPlayerService.getNFLPlayers(pageIndex, pageSize).subscribe((response: PaginatedEntity<BackendNFLPlayer>) => {
       if (response) {
-        console.log('Received NFL players:', response.data);
-        this.dataSource.data = response.data;
+        this.dataSource.data = response.data.map(backendNFLPlayer => FrontendNFLPlayer.fromBackend(backendNFLPlayer));
         this.totalItems = response.total_items;
       } else {
         console.warn('No response received');

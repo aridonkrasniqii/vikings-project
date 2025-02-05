@@ -38,8 +38,6 @@ export abstract class BaseService<T> {
       ...this.httpOptions,
       params: query
     };
-    console.log(`${this.apiUrl}/${endpoint}`);
-    console.log(options);
     return this.http.get<T[]>(`${this.apiUrl}/${endpoint}`, options).pipe(map(this.extractData), catchError(this.handleError));
   }
 
@@ -52,7 +50,7 @@ export abstract class BaseService<T> {
   }
 
   protected postModel(endpoint: string, data: any): Observable<ResponseEntity<T>> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, data, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}/`, data, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected patchModel(endpoint: string, data: any): Observable<ResponseEntity<T>> {

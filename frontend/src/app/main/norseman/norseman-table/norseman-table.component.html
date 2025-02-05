@@ -3,7 +3,7 @@
     <form>
       <input matInput type="text" placeholder="Search" name="st" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
     </form>
-    <button class="entity-table__button entity-table__button--new" routerLink="../form">New</button>
+    <button class="entity-table__button entity-table__button--new" routerLink="/norsemans/form">New</button>
     <button class="entity-table__button entity-table__button--filter">Add Filter</button>
   </div>
 
@@ -33,7 +33,7 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let norseman" class="entity-table__actions">
-        <button class="entity-table__button entity-table__button--edit" [routerLink]="['/edit', norseman.id]">Edit</button>
+        <button class="entity-table__button entity-table__button--edit" [routerLink]="['/norsemans/edit', norseman.id]">Edit</button>
         <button class="entity-table__button entity-table__button--delete" (click)="deleteNorseman(norseman.id)">Delete</button>
       </td>
     </ng-container>

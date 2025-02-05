@@ -1,59 +1,64 @@
-
 .create-form {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 h2 {
-    text-align: center;
+  text-align: center;
+  color: #333;
 }
 
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+.label, label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+input[type="text"], textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
 }
 
 textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
 button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #3e444b;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 button:disabled {
-    background-color: #ccc;
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
 }
 
 .success-message {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-  }
-  
+  color: green;
+  font-size: 14px;
+  text-align: center;
+}

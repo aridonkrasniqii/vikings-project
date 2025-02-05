@@ -3,8 +3,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { VikingService } from '../../../services/viking.service';
-import { Viking } from '../../../interfaces/viking.interface';
+
 import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
+import { BackendViking, FrontendViking } from '../../../models/viking.model';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface'
 })
 export class VikingTableComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['picture', 'actorName', 'characterName', 'description', 'actions'];
-  dataSource = new MatTableDataSource<Viking>();
+  dataSource = new MatTableDataSource<FrontendViking>();
   searchTerm: string = '';
   totalItems = 0;
   itemsPerPage = 10;
@@ -26,7 +27,7 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
   constructor(private vikingService: VikingService) { }
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: Viking, filter: string) => {
+    this.dataSource.filterPredicate = (data: FrontendViking, filter: string) => {
       const transformedFilter = filter.trim().toLowerCase();
       const actorName = data.actorName.trim().toLowerCase();
       const characterName = data.name.trim().toLowerCase();
@@ -46,17 +47,18 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
   }
 
   getVikings(pageIndex: number, pageSize: number): void {
-    this.vikingService.getVikings(pageIndex, pageSize).subscribe((response: PaginatedEntity<Viking>) => {
+    // .set('pageIndex', pageIndex.toString()) // TODO:
+    // .set('pageSize', pageSize.toString())
+    // .set('searchTerm', searchTerm.trim().toLowerCase());
+    this.vikingService.getVikings(pageIndex, pageSize).subscribe((response: PaginatedEntity<BackendViking>) => {
       if (response) {
-        console.log('Received vikings:', response.data);
-        this.dataSource.data = response.data;
+        this.dataSource.data = response.data.map(backendViking => FrontendViking.fromBackend(backendViking)); 
         this.totalItems = response.total_items;
       } else {
         console.warn('No response received');
       }
     });
   }
-  
 
   deleteViking(id: number): void {
     this.vikingService.deleteViking(id).subscribe(() => {
