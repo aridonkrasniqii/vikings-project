@@ -32,7 +32,10 @@ class VikingsService(BaseService):
 
     def create(self, data):
         self._validate_data(data)
+        print("here maybe")
         created_viking = Viking.objects.create_viking(data)
+        print("here")
+        print(created_viking)
         return self.response(created_viking, status.HTTP_201_CREATED)
 
     def update(self, viking_id, data):
@@ -40,16 +43,14 @@ class VikingsService(BaseService):
 
         viking = Viking.objects.get_viking_by_id(viking_id)
         if not viking:
-            return self.response(None, status.HTTP_404_NOT_FOUND, "a je budall ti a cka")
+            return self.response(None, status.HTTP_404_NOT_FOUND, self.VIKING_NOT_FOUND)
 
         self._validate_data(data)
         updated_viking = Viking.objects.update_viking(viking_id, data)
         return self.response(updated_viking, status.HTTP_200_OK, self.VIKING_UPDATED)
 
     def delete(self, viking_id):
-        validation_response = self._validate_id(viking_id)
-        if validation_response:
-            return validation_response
+        self._validate_id(viking_id)
 
         viking = Viking.objects.get_viking_by_id(viking_id)
         if not viking:

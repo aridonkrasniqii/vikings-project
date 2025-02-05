@@ -1,64 +1,15 @@
 import logging
 from scrapy import signals
+from scrapy.utils.response import response_status_message
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from scrapy.http import HtmlResponse
 
 logger = logging.getLogger('vikings_scraper')
-
-class VikingsScraperSpiderMiddleware:
-    # This middleware manages spider-level logic such as start requests and responses
-    @classmethod
-    def from_crawler(cls, crawler):
-        # This method is used by Scrapy to create your spiders.
-        s = cls()
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
-
-    def process_spider_input(self, response, spider):
-        # Called for each response that goes through the spider middleware
-        return None  # No changes to the response
-
-    def process_spider_output(self, response, result, spider):
-        # Called after the spider processes the response
-        for i in result:
-            yield i  # Forward the output
-
-    def process_spider_exception(self, response, exception, spider):
-        # Called when an exception is raised by the spider processing
-        pass  # We don't handle any exceptions here, just let Scrapy continue
-
-    def process_start_requests(self, start_requests, spider):
-        # Called with the start requests for the spider
-        for r in start_requests:
-            yield r
-
-    def spider_opened(self, spider):
-        spider.logger.info(f"Spider opened: {spider.name}")
-
-
-class VikingsScraperDownloaderMiddleware:
-    # This middleware handles the downloader-level logic such as requests and responses
-    @classmethod
-    def from_crawler(cls, crawler):
-        s = cls()
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
-
-    def process_request(self, request, spider):
-        # Called for each request that goes through the downloader middleware
-        return None  # No changes to the request
-
-    def process_response(self, request, response, spider):
-        # Called with the response returned from the downloader
-        return response  # Forward the response
-
-    def process_exception(self, request, exception, spider):
-        # Called when an exception occurs during the downloading process
-        pass  # No custom handling of exceptions
-
-    def spider_opened(self, spider):
-        spider.logger.info(f"Spider opened: {spider.name}")
 
 class SeleniumMiddleware:
     def __init__(self, driver_name, browser_executable_path, driver_arguments):
@@ -101,6 +52,8 @@ class SeleniumMiddleware:
         edge_options.add_argument('--no-sandbox')
         edge_options.add_argument('--disable-webgl')  # Disable WebGL if it's not required
         edge_options.add_argument('--enable-unsafe-swiftshader')  # Add this for the WebGL fallback
+        edge_options.add_argument('ignore-certificate-errors')
+
         return edge_options
 
     def process_request(self, request, spider):
@@ -113,11 +66,17 @@ class SeleniumMiddleware:
         try:
             self.driver.get(request.url)
             spider.logger.info("Page is loaded")
+
+            body = self.driver.page_source
+            return HtmlResponse(self.driver.current_url, body=body, encoding='utf-8', request=request)
+
         except Exception as e:
             spider.logger.error(f"Failed to load page: {request.url}. Error: {str(e)}")
 
     def process_response(self, request, response, spider):
-        # Called with the response returned from the downloader.
+        if response.status in [403, 500, 502, 503, 504]:
+            reason = response_status_message(response.status)
+            return self._retry(request, reason, spider) or response
         return response
 
     def process_exception(self, request, exception, spider):

@@ -8,7 +8,6 @@ from tv_series.norsemans.norsemen_validators import NorsemanValidator
 
 
 class NorsemenService(BaseService):
-
     NORSEMAN_CREATED = 'Norseman created'
     NORSEMAN_UPDATED = 'Norseman updated'
     NORSEMAN_DELETED = 'Norseman deleted'
@@ -21,7 +20,9 @@ class NorsemenService(BaseService):
         return self.paginated_response(Norseman.objects.get_paginated_norsemen(request, view))
 
     def get_by_id(self, norseman_id):
-        self._validate_id(norseman_id)
+        validation_response = self._validate_id(norseman_id)
+        if validation_response:
+            return validation_response
 
         norseman = Norseman.objects.get_norseman_by_id(norseman_id)
 
@@ -30,18 +31,42 @@ class NorsemenService(BaseService):
         return self.response(None, status.HTTP_404_NOT_FOUND, self.NORSEMAN_NOT_FOUND)
 
     def create(self, data):
-        self._validate_data(data)
+        validation_response = self._validate_data(data)
+        if validation_response:
+            return validation_response
+
         created_norseman = Norseman.objects.create_norseman(data)
         return self.response(created_norseman, status.HTTP_201_CREATED)
 
+    def update_or_create(self, data):
+        validation_response = self._validate_data(data)
+        if validation_response:
+            raise ValueError(f"Invalid data: {validation_response}")
+
+        norseman, created = Norseman.objects.update_or_create(
+            name=data.get('name'),
+            defaults={
+                'actor_name': data.get('actor_name', ''),
+                'description': data.get('description', ''),
+                'photo': data.get('photo', ''),
+            }
+        )
+        # No need to return response objects here, just ensure the record is created or updated
+        return norseman
+
     def update(self, norseman_id, data):
-        self._validate_id(norseman_id)
+        validation_response = self._validate_id(norseman_id)
+        if validation_response:
+            return validation_response
 
         norseman = Norseman.objects.get_norseman_by_id(norseman_id)
         if not norseman:
             return self.response(None, status.HTTP_404_NOT_FOUND, self.NORSEMAN_NOT_FOUND)
 
-        self._validate_data(data)
+        validation_response = self._validate_data(data)
+        if validation_response:
+            return validation_response
+
         updated_norseman = Norseman.objects.update_norseman(norseman_id, data)
         return self.response(updated_norseman, status.HTTP_200_OK, self.NORSEMAN_UPDATED)
 
@@ -73,5 +98,5 @@ class NorsemenService(BaseService):
         is_valid, error_message = validator.validate()
 
         if not is_valid:
-            return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
+            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
         return None

@@ -25,9 +25,7 @@ class NFLPlayerService(BaseService):
         return self.paginated_response(NFLPlayer.objects.get_paginated_nfl_players(request, view))
 
     def get_by_id(self, nfl_player_id):
-        validation_response = self._validate_id(nfl_player_id)
-        if validation_response:
-            return validation_response
+        self._validate_id(nfl_player_id)
 
         nfl_player = NFLPlayer.objects.get_nfl_player_by_id(nfl_player_id)
         if nfl_player:
@@ -47,22 +45,19 @@ class NFLPlayerService(BaseService):
         return self.response(created_nfl_player, status.HTTP_201_CREATED, self.NFL_PLAYER_CREATED)
 
     def update(self, nfl_player_id, data):
-        validation_response = self._validate_id(nfl_player_id)
-        if validation_response:
-            return validation_response
+        self._validate_id(nfl_player_id)
 
         nfl_player = NFLPlayer.objects.get_nfl_player_by_id(nfl_player_id)
         if not nfl_player:
             return self.response(None, status.HTTP_404_NOT_FOUND, self.NFL_PLAYER_NOT_FOUND)
 
-        validation_response = self._validate_data(data)
-        if validation_response:
-            return validation_response
+        self._validate_data(data)
 
         stats_data = data.pop('stats', [])
 
         with transaction.atomic():
             updated_nfl_player = NFLPlayer.objects.update_nfl_player(nfl_player_id, data)
+
             for stat in stats_data:
                 NflPlayerStats.objects.update_nfl_player_stats(stat['id'], stat)
 
