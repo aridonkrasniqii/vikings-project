@@ -14,3 +14,14 @@ backend/.idea/misc.xml
 backend/.idea/modules.xml
 backend/.idea/vcs.xml
 backend/.idea/backend.iml
+backend/app/vikings_scraper/celerybeat-schedule
+backend/app/scraping/scraping/spiders/__pycache__/
+backend/app/api/__pycache__/
+backend/app/api/base/__pycache__/
+backend/app/api/base/models/__pycache__/
+backend/app/api/nfl_players/__pycache__/
+backend/app/api/norsemans/__pycache__/
+backend/app/config/__pycache__/
+backend/app/scraping/scraping/__pycache__/
+backend/app/scraping/__pycache__/
+backend/app/api/vikings/__pycache__/
