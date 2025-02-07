@@ -34,6 +34,16 @@ Display the collected data with the following features:
   - **API App:** Communicates with the frontend and provides services.
   - **Scraping App:** Handles all scraping tasks using Celery, Redis, and Selenium.
 
+### API App
+- Views: Handle requests from the frontend and return responses (e.g., JSON data).
+- Serializers: Convert data between Python objects and JSON format for API responses.
+- URLs: Define the API endpoints for different resources or actions.
+- Services: Contain business logic 
+- Managers: Custom managers handle queries or specialized data access patterns. They are used to add reusable methods to your models, such as custom filtering or data aggregation logic.
+- Validators: Ensure that data received from users (via API requests) meets the necessary requirements
+- Models: Define the data structures and interact with the database.
+- API-specific Logic: Additional helpers or methods to support the API layer.
+
 ### Scraping
 - **Tasks:** Defined tasks for scraping data.
 - **Items:** Structured data items.
