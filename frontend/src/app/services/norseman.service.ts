@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { BaseService } from './base.service';
-import { Norseman } from '../interfaces/norseman.interface';
 import { PaginatedEntity } from '../interfaces/paginated.entity.interface';
-import { of } from 'rxjs';
+import { ResponseEntity } from '../interfaces/response.entity.interface';
+import { BackendNorseman, FrontendNorseman } from '../models/norseman.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -16,26 +16,24 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class NorsemanService extends BaseService<Norseman> {
-  private resource = 'norsemen'; 
+export class NorsemanService extends BaseService<BackendNorseman> {
+  private resource = 'norsemen';
 
   constructor(http: HttpClient) {
     super(http);
   }
 
-  getAllNorsemans(): Observable<Norseman[]> {
-    return this.getAllModels(this.resource, httpOptions).pipe(
-      map(response => response.data.map(item => this.transformNorseman(item)))
-    );
-  }
-
-  getNorsemanById(id: number): Observable<Norseman> {
+  getNorsemanById(id: number): Observable<ResponseEntity<BackendNorseman>> {
     return this.getBy(`${this.resource}/${id}`, httpOptions).pipe(
-      map(response => this.transformNorseman(response))
+      map(response => response),
+      catchError(error => {
+        console.error('Error in getNorsemanById:', error);
+        return of(null);
+      })
     );
   }
 
-  getNorsemans(pageIndex: number, pageSize: number): Observable<PaginatedEntity<Norseman>> {
+  getNorsemans(pageIndex: number, pageSize: number): Observable<PaginatedEntity<BackendNorseman>> {
     return this.getAllModels(this.resource, {
       params: {
         pageIndex: pageIndex.toString(),
@@ -43,16 +41,7 @@ export class NorsemanService extends BaseService<Norseman> {
       },
       ...httpOptions
     }).pipe(
-      map(response => {
-        const transformedResponse: PaginatedEntity<Norseman> = {
-          total_items: response.total_items,
-          total_pages: response.total_pages,
-          current_page: response.current_page,
-          limit: response.limit,
-          data: response.data.map(item => this.transformNorseman(item))
-        };
-        return transformedResponse;
-      }),
+      map(response => response),
       catchError(error => {
         console.error('Error in getNorsemans:', error);
         return of(null); 
@@ -60,39 +49,43 @@ export class NorsemanService extends BaseService<Norseman> {
     );
   }
 
-  getNorsemanByName(name: string): Observable<Norseman> {
+  getNorsemanByName(name: string): Observable<ResponseEntity<BackendNorseman>> {
     return this.getBy(`${this.resource}/name/${name}`, httpOptions).pipe(
-      map(response => this.transformNorseman(response))
+      map(response => response),
+      catchError(error => {
+        console.error('Error in getNorsemanByName:', error);
+        return of(null); 
+      })
     );
   }
 
-  createNorseman(data: Norseman): Observable<Norseman> {
-    return this.postModel(this.resource, data).pipe(
-      map(response => this.transformNorseman(response))
+  createNorseman(data: FrontendNorseman): Observable<ResponseEntity<BackendNorseman>> {
+    return this.postModel(this.resource, FrontendNorseman.toBackend(data)).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error in createNorseman:', error);
+        return of(null); 
+      })
     );
   }
 
-  updateNorseman(id: number, data: Partial<Norseman>): Observable<Norseman> {
-    return this.putModel(`${this.resource}/${id}`, data).pipe(
-      map(response => this.transformNorseman(response))
+  updateNorseman(id: number, data: FrontendNorseman): Observable<ResponseEntity<BackendNorseman>> {
+    return this.putModel(`${this.resource}/${id}`, FrontendNorseman.toBackend(data)).pipe(
+      map(response => response),
+      catchError(error => {
+        console.error('Error in updateNorseman:', error);
+        return of(null); 
+      })
     );
   }
 
-  deleteNorseman(id: number): Observable<Norseman> {
+  deleteNorseman(id: number): Observable<ResponseEntity<BackendNorseman>> {
     return this.deleteModel(`${this.resource}/${id}`).pipe(
-      map(response => this.transformNorseman(response))
+      map(response => response),
+      catchError(error => {
+        console.error('Error in deleteNorseman:', error);
+        return of(null); 
+      })
     );
-  }
-
-  private transformNorseman(item: any): Norseman {
-    return {
-      id: item.id,
-      name: item.name,
-      photo: item.photo,
-      actorName: item.actor_name,
-      description: item.description,
-      createdAt: item.created_at,
-      updatedAt: item.updated_at
-    };
   }
 }

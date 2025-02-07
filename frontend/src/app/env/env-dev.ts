@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrl: 'http://localhost:3000', //  needs to be updated to the correct API endpoint
+    apiUrl: 'http://localhost:8000/api', 
     production: false
   };
   
