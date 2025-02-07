@@ -67,9 +67,6 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-#### Access the application
-The application will be available at [http://localhost:8000](http://localhost:8000).
-
 ## API Endpoints
 ### Vikings API
 - **Resource URL:** `http://localhost:8000/api/vikings/`
