@@ -40,7 +40,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
+    'http://localhost:4200'
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -86,7 +86,6 @@ DATABASES = {
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -124,18 +123,10 @@ CELERY_TIMEZONE = 'Europe/Paris'
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    'scrape_vikings': {
-        'task': 'scraping.tasks.scrape_vikings',
-        'schedule': crontab(minute='*/1'),  # Runs every minute for testing
-    },
-    'scrape_norsemen': {
-        'task': 'scraping.tasks.scrape_norsemen',
-        'schedule': crontab(minute='*/1'),  # Runs every minute for testing
-    },
-    'scrape_nfl_players': {
-        'task': 'scraping.tasks.scrape_nfl_players',
-        'schedule': crontab(minute='*/1'),  # Runs every minute for testing
-    },
+    'scrape_all': {
+        'task': 'scraping.scraping.tasks.scrape_all',
+        'schedule': crontab(minute='*/3'),  # Runs every minute for testing
+    }
 }
 
 BOT_NAME = 'scraping'
@@ -158,9 +149,9 @@ USER_AGENTS = [
     os.getenv("USER_AGENT_2", 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/89.0')
 ]
 
-SELENIUM_DRIVER_NAME = os.getenv('SELENIUM_DRIVER_NAME', 'edge')
-SELENIUM_DRIVER_EXECUTABLE_PATH = os.getenv('SELENIUM_DRIVER_EXECUTABLE_PATH', r"C:\Users\Aridon\Downloads\edgedriver_win64 (1)\msedgedriver.exe")
-SELENIUM_BROWSER_EXECUTABLE_PATH = os.getenv('SELENIUM_BROWSER_EXECUTABLE_PATH', None)
+SELENIUM_DRIVER_NAME = os.getenv('SELENIUM_DRIVER_NAME', 'chrome')
+SELENIUM_DRIVER_EXECUTABLE_PATH = os.getenv('SELENIUM_DRIVER_EXECUTABLE_PATH', r"path/to/your/local/driver")
+SELENIUM_BROWSER_EXECUTABLE_PATH = os.getenv('SELENIUM_BROWSER_EXECUTABLE_PATH', "/path/to/your/local/google-chrome")
 SELENIUM_DRIVER_ARGUMENTS = os.getenv('SELENIUM_DRIVER_ARGUMENTS', '--headless --disable-gpu --ignore-certificate-errors').split()
 
 ROBOTSTXT_OBEY = os.getenv('ROBOTSTXT_OBEY', 'False') == 'True'

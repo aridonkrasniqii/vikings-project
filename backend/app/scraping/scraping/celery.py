@@ -11,6 +11,8 @@ app = Celery('scraping')
 app.config_from_object(f'django.conf:settings', namespace='CELERY')
 from scraping.scraping.tasks import scrape_vikings, scrape_norsemen, scrape_nfl_players
 app.autodiscover_tasks()
+app.conf.update(task_concurrency=6, worker_fetch_multiplier=1)
+
 
 @app.task(bind=True)
 def debug_task(self):

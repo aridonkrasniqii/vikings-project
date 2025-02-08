@@ -1,14 +1,10 @@
-
-
+from celery import group, shared_task, chain
+import logging
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 from scraping.scraping.spiders.nfl_players_spider import NflPlayersSpider
 from scraping.scraping.spiders.vikings_spider import VikingsSpider
 from scraping.scraping.spiders.norsemen_spider import NorsemenSpider
-
-from celery import shared_task
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
-
-import logging
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)s:%(message)s',
@@ -17,25 +13,36 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-@shared_task
-def scrape_vikings():
+from scraping.scraping.celery import app 
+
+def run_spider(spider_class):
+    process = CrawlerProcess(settings=get_project_settings())
+    process.crawl(spider_class)
+    process.start()
+
+@app.task
+def scrape_vikings(*args, **kwargs):
     logger.info('Scraping Vikings')
-    process = CrawlerProcess(settings=get_project_settings())
-    process.crawl(VikingsSpider)
-    process.start()
-    
+    run_spider(VikingsSpider)
 
-@shared_task
-def scrape_norsemen():
-    logger.info('Scraping NorsemenSpider')
-    process = CrawlerProcess(settings=get_project_settings())
-    process.crawl(NorsemenSpider)
-    process.start()
+@app.task
+def scrape_norsemen(*args, **kwargs):
+    logger.info('Scraping Norsemen')
+    run_spider(NorsemenSpider)
 
+@app.task
+def scrape_nfl_players(*args, **kwargs):
+    logger.info('Scraping NFL Players')
+    run_spider(NflPlayersSpider)
 
-@shared_task
-def scrape_nfl_players():
-    logger.info('Scraping NflPlayersSpider')
-    process = CrawlerProcess(settings=get_project_settings())
-    process.crawl(NflPlayersSpider)
-    process.start()
+@app.task
+def error_handler(task_id, exception):
+    logger.error(f"Error in task {task_id}: {exception}")
+
+@app.task
+def scrape_all():
+    # Chain the tasks together: Vikings -> Norsemen -> NFL Players
+    job = group(
+        scrape_vikings.s() , scrape_norsemen.s() , scrape_nfl_players.s()
+    )()
+    return job

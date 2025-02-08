@@ -38,7 +38,7 @@ export abstract class BaseService<T> {
       ...this.httpOptions,
       params: query
     };
-    return this.http.get<T[]>(`${this.apiUrl}/${endpoint}`, options).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.get<T[]>(`${this.apiUrl}/${endpoint}/`, options).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected getBy(endpoint: string, params?: any): Observable<ResponseEntity<T>> {
@@ -46,22 +46,22 @@ export abstract class BaseService<T> {
       ...this.httpOptions,
       params: params
     };
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, options).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.get<T>(`${this.apiUrl}/${endpoint}/`).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected postModel(endpoint: string, data: any): Observable<ResponseEntity<T>> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}/`, data, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.post<T>(`${this.apiUrl}/${endpoint}/`, data).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected patchModel(endpoint: string, data: any): Observable<ResponseEntity<T>> {
-    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.patch<T>(`${this.apiUrl}/${endpoint}/`, data).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected putModel(endpoint: string, data: any): Observable<ResponseEntity<T>> {
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, data, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}/`, data).pipe(map(this.extractData), catchError(this.handleError));
   }
 
   protected deleteModel(endpoint: string): Observable<ResponseEntity<T>> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, this.httpOptions).pipe(map(this.extractData), catchError(this.handleError));
+    return this.http.delete<T>(`${this.apiUrl}/${endpoint}/`).pipe(map(this.extractData), catchError(this.handleError));
   }
 }

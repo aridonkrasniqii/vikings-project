@@ -15,7 +15,8 @@ class NFLPlayer(VikingBase):
 
     class Meta:
         db_table = 'nflplayers'
-        app_label = "api"
+        # app_label = "api"
+
     def __str__(self):
         return self.name
 
