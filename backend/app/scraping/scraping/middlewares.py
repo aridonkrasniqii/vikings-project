@@ -38,6 +38,7 @@ class SeleniumMiddleware:
             return
 
         try:
+            logger.info("Initializing Selenium")
             service = Service(self.browser_executable_path)
             edge_options = self._get_edge_options(self.driver_arguments)
             self.driver = webdriver.Edge(service=service, options=edge_options)
@@ -108,3 +109,5 @@ class SeleniumMiddleware:
         else:
             spider.logger.error(f"Gave up retrying {request.url} (failed {retries} times): {reason}")
             return None
+
+

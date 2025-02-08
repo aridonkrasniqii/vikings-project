@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class NorsemenSpider(scrapy.Spider):
     name = 'norsemen'
     start_urls = ['https://www.themoviedb.org/tv/68126-vikingane/cast']
+    collected_items = []
 
     def start_requests(self):
         for url in self.start_urls:

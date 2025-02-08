@@ -4,6 +4,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import logging
+
+from scraping.scraping.items import VikingItem
+
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s:%(message)s',
+    level=logging.INFO
+)
+
+logger = logging.getLogger(__name__)
+
 
 class VikingsSpider(scrapy.Spider):
     name = 'vikings'

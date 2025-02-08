@@ -1,3 +1,5 @@
+from asgiref.sync import sync_to_async
+from django.db import transaction
 from rest_framework import status
 
 from api.base.models.entity_response import EntityResponse
@@ -49,19 +51,21 @@ class VikingsService(BaseService):
         updated_viking = Viking.objects.update_viking(viking_id, data)
         return self.response(updated_viking, status.HTTP_200_OK, self.VIKING_UPDATED)
 
+    @sync_to_async
     def update_or_create(self, data):
         validation_response = self._validate_data(data)
         if validation_response:
             raise ValueError(f"Invalid data: {validation_response}")
 
-        viking, created = Viking.objects.update_or_create(
-            name=data.get('name'),
-            defaults={
-                'actor_name': data.get('actor_name', ''),
-                'description': data.get('description', ''),
-                'photo': data.get('photo', ''),
-            }
-        )
+        with transaction.atomic():
+            viking, created = Viking.objects.update_or_create(
+                name=data.get('name'),
+                defaults={
+                    'actor_name': data.get('actor_name', ''),
+                    'description': data.get('description', ''),
+                    'photo': data.get('photo', ''),
+                }
+            )
         # No need to return response objects here, just ensure the record is created or updated
         return viking
 

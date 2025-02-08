@@ -1,3 +1,5 @@
+from asgiref.sync import sync_to_async
+from django.db import transaction
 from rest_framework import status
 from api.base.models.entity_response import EntityResponse
 from api.base.serializers import NorsemanSerializer, PaginatedNorsemanSerializer
@@ -38,19 +40,21 @@ class NorsemenService(BaseService):
         created_norseman = Norseman.objects.create_norseman(data)
         return self.response(created_norseman, status.HTTP_201_CREATED)
 
+    @sync_to_async
     def update_or_create(self, data):
         validation_response = self._validate_data(data)
         if validation_response:
             raise ValueError(f"Invalid data: {validation_response}")
 
-        norseman, created = Norseman.objects.update_or_create(
-            name=data.get('name'),
-            defaults={
-                'actor_name': data.get('actor_name', ''),
-                'description': data.get('description', ''),
-                'photo': data.get('photo', ''),
-            }
-        )
+        with transaction.atomic():
+            norseman, created = Norseman.objects.update_or_create(
+                name=data.get('name'),
+                defaults={
+                    'actor_name': data.get('actor_name', ''),
+                    'description': data.get('description', ''),
+                    'photo': data.get('photo', ''),
+                }
+            )
         # No need to return response objects here, just ensure the record is created or updated
         return norseman
 

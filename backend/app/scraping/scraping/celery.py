@@ -1,20 +1,18 @@
 from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
+import logging
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scraping.scraping.settings')
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 app = Celery('scraping')
-app.config_from_object('django.conf:settings', namespace='CELERY')
-
+app.config_from_object(f'django.conf:settings', namespace='CELERY')
 from scraping.scraping.tasks import scrape_vikings, scrape_norsemen, scrape_nfl_players
-
-app.conf.update(
-    broker_url='redis://localhost:6379/0',
-    result_backend='redis://localhost:6379/0',
-    worker_pool='solo',
-    broker_connection_retry_on_startup=True,
-)
+app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+

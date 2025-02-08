@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from django.db import transaction
 
 from api.base.validators import BaseValidator
@@ -44,6 +45,7 @@ class NFLPlayerService(BaseService):
 
         return self.response(created_nfl_player, status.HTTP_201_CREATED, self.NFL_PLAYER_CREATED)
 
+    @sync_to_async
     def update_or_create(self, data):
         self._validate_data(data)
 
