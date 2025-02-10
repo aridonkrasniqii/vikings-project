@@ -8,11 +8,6 @@ import logging
 from scraping.scraping.items import NorsemanItem
 from scraping.scraping.utils.xpaths import NorsemanXPath
 
-# Configure logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
 class NorsemenSpider(scrapy.Spider):
     name = 'norsemen'
     start_urls = ['https://www.themoviedb.org/tv/68126-vikingane/cast']

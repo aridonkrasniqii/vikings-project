@@ -11,6 +11,7 @@ class Viking(VikingBase):
 
     class Meta:
         db_table = 'vikings'
+        app_label = 'api'
 
     def __str__(self):
         return self.name

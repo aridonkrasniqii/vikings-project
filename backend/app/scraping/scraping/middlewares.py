@@ -1,7 +1,6 @@
 import logging
 import random
 from scrapy.utils.response import response_status_message
-from scrapy.downloadermiddlewares.retry import RetryMiddleware
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -25,7 +24,6 @@ class SeleniumMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
-        # This method is required by Scrapy to configure the middleware using settings
         driver_name = crawler.settings.get('SELENIUM_DRIVER_NAME', 'chrome')
         browser_executable_path = crawler.settings.get('SELENIUM_BROWSER_EXECUTABLE_PATH', None)
         driver_arguments = crawler.settings.get('SELENIUM_DRIVER_ARGUMENTS', [])

@@ -5,10 +5,10 @@ from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
+
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = os.getenv('DEBUG') == 'True'
@@ -124,9 +124,17 @@ CELERY_TIMEZONE = 'Europe/Paris'
 from celery.schedules import crontab
 
 CELERY_BEAT_SCHEDULE = {
-    'scrape_all': {
-        'task': 'scraping.scraping.tasks.scrape_all',
-        'schedule': crontab(minute='*/3'),  # Runs every minute for testing
+    'scrape_vikings': {
+        'task': 'scraping.scraping.tasks.scrape_vikings',
+        'schedule': crontab(minute='*/50'),
+    },
+    'scrape_norsemen': {
+        'task': 'scraping.scraping.tasks.scrape_norsemen',
+        'schedule': crontab(minute='*/50'),
+    },
+    'scrape_nfl_players': {
+        'task': 'scraping.scraping.tasks.scrape_nfl_players',
+        'schedule': crontab(minute='*/50'),
     }
 }
 
@@ -159,38 +167,3 @@ ROBOTSTXT_OBEY = os.getenv('ROBOTSTXT_OBEY', 'False') == 'True'
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_START_DELAY = int(os.getenv('AUTOTHROTTLE_START_DELAY')or '5')
 AUTOTHROTTLE_MAX_DELAY = int(os.getenv('AUTOTHROTTLE_MAX_DELAY') or '60')
-
-
-
-# Logging configuration
-import logging
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} {levelname} {name} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}

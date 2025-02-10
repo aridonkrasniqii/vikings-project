@@ -13,7 +13,7 @@ class NflXPath(Enum):
     PLAYER_EXPERIENCE = './/td[7]/span/text()'
     PLAYER_COLLEGE = './/td[8]/text()'
 
-    STATS_TABLE = '(//div[@class="d3-l-col__col-12 nfl-t-stats--table flex-wrap"]//table/tbody/tr)[2]'
+    STATS_TABLE = '(//div[@class="d3-l-col__col-12 nfl-t-stats--table flex-wrap" and not(@id)]//table/tbody/tr)'
     STATS_SEASON = './td[1]/text()'
     STATS_TEAM = './td[2]/text()'
     STATS_GAMES_PLAYED = './td[3]/text()'

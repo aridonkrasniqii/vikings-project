@@ -8,11 +8,6 @@ import logging
 from scraping.scraping.items import VikingItem
 from scraping.scraping.utils.xpaths import VikingsXPath
 
-# Configure logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
 class VikingsSpider(scrapy.Spider):
     name = 'vikings'
     start_urls = ['https://www.history.com/shows/vikings/cast']

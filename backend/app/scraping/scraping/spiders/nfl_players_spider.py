@@ -3,14 +3,9 @@ from scrapy_selenium import SeleniumRequest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import logging
 
 from scraping.scraping.items import NflPlayerStatsItem, NFLPlayerItem
 from scraping.scraping.utils.xpaths import NflXPath
-
-# Configure logging
-logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 class NflPlayersSpider(scrapy.Spider):
     name = 'nflplayers'
@@ -37,7 +32,6 @@ class NflPlayersSpider(scrapy.Spider):
 
         for player_row in table.xpath(NflXPath.PLAYER_ROW.value):
             player_item = self.extract_player_info(player_row, response)
-            logger.info(f'Processing NFL player: {player_item["name"]}')
 
             player_link = player_item.get('player_link')
             if player_link:
@@ -72,7 +66,7 @@ class NflPlayersSpider(scrapy.Spider):
         yield player_item
 
     def extract_stats(self, response) -> list:
-        stats_table = response.xpath(f"({NflXPath.STATS_TABLE.value})[2]")
+        stats_table = response.xpath(f"({NflXPath.STATS_TABLE.value})")
 
         stats = []
         for row in stats_table[:3]:

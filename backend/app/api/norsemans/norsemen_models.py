@@ -11,6 +11,7 @@ class Norseman(VikingBase):
 
     class Meta:
         db_table = 'norsemans'
+        app_label = 'api'
 
     def __str__(self):
         return self.name
