@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from scrapy.http import HtmlResponse
+from webdriver_manager.chrome import ChromeDriverManager
 
 logger = logging.getLogger('scraping')
 
@@ -26,7 +27,7 @@ class SeleniumMiddleware:
     def from_crawler(cls, crawler, *args, **kwargs):
         # This method is required by Scrapy to configure the middleware using settings
         driver_name = crawler.settings.get('SELENIUM_DRIVER_NAME', 'chrome')
-        browser_executable_path = crawler.settings.get('SELENIUM_DRIVER_EXECUTABLE_PATH', '/usr/bin/google-chrome')
+        browser_executable_path = crawler.settings.get('SELENIUM_BROWSER_EXECUTABLE_PATH', None)
         driver_arguments = crawler.settings.get('SELENIUM_DRIVER_ARGUMENTS', [])
 
         return cls(driver_name, browser_executable_path, driver_arguments)
@@ -36,21 +37,33 @@ class SeleniumMiddleware:
             return
 
         try:
-            logger.info("Initializing Selenium ChromeDriver")
-            service = Service(self.browser_executable_path)
+            logger.info("Initializing Selenium with Google Chrome and WebDriver Manager")
+
+
             chrome_options = self._get_chrome_options(self.driver_arguments)
+            # Automatically get the right driver using WebDriver Manager
+            service = Service(ChromeDriverManager().install())  # WebDriver Manager will fetch the correct ChromeDriver
             self.driver = webdriver.Chrome(service=service, options=chrome_options)
             self.driver.set_window_size(1120, 550)
             self.driver.set_page_load_timeout(30)
             self.driver.logger = logging.getLogger('SeleniumMiddleware')
+
         except Exception as e:
             logging.error(f"Error initializing Selenium WebDriver: {str(e)}")
 
     def _get_chrome_options(self, driver_arguments):
         chrome_options = Options()
 
+        # If you don't want to specify the browser executable path, WebDriver Manager handles it
+        # But if needed, set it here like in the Brave setup
+        if self.browser_executable_path:
+            chrome_options.binary_location = self.browser_executable_path  # Path to Chrome binary
+
+        # Add arguments to Chrome options
         for arg in driver_arguments:
             chrome_options.add_argument(arg)
+
+        # Optional: Headless mode for scraping
         chrome_options.add_argument('--headless')  # Run headless mode
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--no-sandbox')

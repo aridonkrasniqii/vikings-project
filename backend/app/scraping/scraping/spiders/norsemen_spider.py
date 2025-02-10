@@ -6,13 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 import logging
 
 from scraping.scraping.items import NorsemanItem
+from scraping.scraping.utils.xpaths import NorsemanXPath
 
-logging.basicConfig(
-    format='%(asctime)s %(levelname)s:%(message)s',
-    level=logging.INFO
-)
-
+# Configure logging
+logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class NorsemenSpider(scrapy.Spider):
     name = 'norsemen'
@@ -26,36 +25,32 @@ class NorsemenSpider(scrapy.Spider):
                 callback=self.parse,
                 wait_time=20,
                 wait_until=lambda driver: WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located((By.XPATH, '//li[contains(@data-order, "0")]'))
+                    EC.presence_of_element_located((By.XPATH, NorsemanXPath.CAST_MEMBER.value))
                 ),
             )
 
     def parse(self, response):
-        for character in response.xpath('//li[contains(@data-order, "0")]'):
-            actor_page = character.xpath('.//a/@href').get()
-            actor_name = character.xpath('.//div[@class="info"]//p/a/text()').get()
-            character_name = character.xpath('.//p[@class="character"]/a/text()').get()
-            photo = character.xpath('.//img[contains(@class, "profile")]/@src').get()
-            photo_url = response.urljoin(photo) if photo else None
+        for character in response.xpath(NorsemanXPath.CAST_MEMBER.value):
+            item = self.extract_norseman_info(character, response)
 
-            item = NorsemanItem(
-                name=character_name,
-                actor_name=actor_name,
-                photo=photo_url,
-                description='Fetching biography...'
-            )
-
+            actor_page = character.xpath(NorsemanXPath.ACTOR_PAGE.value).get(default='')
             if actor_page:
                 actor_url = response.urljoin(actor_page)
                 yield SeleniumRequest(url=actor_url, callback=self.parse_actor, meta={'item': item})
             else:
                 yield item
 
+    def extract_norseman_info(self, character, response) -> NorsemanItem:
+        return NorsemanItem(
+            name=character.xpath(NorsemanXPath.CHARACTER_NAME.value).get(default='Unknown Character'),
+            actor_name=character.xpath(NorsemanXPath.ACTOR_NAME.value).get(default='Unknown Actor'),
+            photo=response.urljoin(character.xpath(NorsemanXPath.PHOTO.value).get(default='N/A')) if character.xpath(
+                NorsemanXPath.PHOTO.value).get() != 'N/A' else None,
+            description='Fetching biography...'  # Default description, will be updated later
+        )
+
     def parse_actor(self, response):
         item = response.meta['item']
-        biography = response.xpath('//div[contains(@class, "text") and contains(@class, "line-clamp-6")]//p/text()').get()
+        biography = response.xpath(NorsemanXPath.DESCRIPTION.value).get(default='No description available.')
         item['description'] = biography.split('. ')[0] + '.' if biography else 'No description available.'
         yield item
-
-
-

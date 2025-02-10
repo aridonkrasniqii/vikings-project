@@ -4,7 +4,6 @@ from rest_framework import status
 from api.base.models.entity_response import EntityResponse
 from api.base.serializers import NorsemanSerializer, PaginatedNorsemanSerializer
 from api.base.services import BaseService
-from api.base.validators import BaseValidator
 from api.norsemans.norsemen_models import Norseman
 from api.norsemans.norsemen_validators import NorsemanValidator
 
@@ -85,12 +84,6 @@ class NorsemenService(BaseService):
 
         Norseman.objects.delete_norseman(norseman)
         return self.response(norseman, status.HTTP_200_OK, self.NORSEMAN_DELETED)
-
-    def _validate_id(self, norseman_id):
-        is_valid_id, error_message = BaseValidator.validate_id(norseman_id)
-        if not is_valid_id:
-            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
-        return None
 
     def _validate_data(self, data):
         name = data.get('name')

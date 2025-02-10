@@ -1,4 +1,3 @@
-
 from api.base.models.base_models import VikingBase
 from api.nfl_players.nfl_players_model import NFLPlayer, NflPlayerStats
 from api.norsemans.norsemen_models import Norseman
@@ -29,13 +28,13 @@ class NorsemanSerializer(VikingBaseSerializer):
 
 class NFLPlayerStatsSerializer(serializers.ModelSerializer):
     player = serializers.PrimaryKeyRelatedField(queryset=NFLPlayer.objects.all())
-    season = serializers.IntegerField()  # Season year
-    team = serializers.CharField(max_length=255)  # Team for the season
-    games_played = serializers.IntegerField(default=0)  # Total games played
-    receptions = serializers.IntegerField(default=0)  # Total receptions
-    receiving_yards = serializers.IntegerField(default=0)  # Total receiving yards
-    receiving_touchdowns = serializers.IntegerField(default=0)  # Receiving touchdowns
-    longest_reception = serializers.IntegerField(default=0)  # Longest reception in yards
+    season = serializers.IntegerField()
+    team = serializers.CharField(max_length=255)
+    games_played = serializers.IntegerField(default=0)
+    receptions = serializers.IntegerField(default=0)
+    receiving_yards = serializers.IntegerField(default=0)
+    receiving_touchdowns = serializers.IntegerField(default=0)
+    longest_reception = serializers.IntegerField(default=0)
 
     class Meta:
         model = NflPlayerStats

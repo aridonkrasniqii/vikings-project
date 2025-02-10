@@ -20,13 +20,14 @@ class NFLPlayerItem(scrapy.Item):
     experience = scrapy.Field()  # Years in the NFL
     college = scrapy.Field()
     photo = scrapy.Field()
+    stats = scrapy.Field()
+    player_link = scrapy.Field()
 
 class NflPlayerStatsItem(scrapy.Item):
-    player_name = scrapy.Field()
-    season = scrapy.Field()  # Season year
-    team = scrapy.Field()  # Team for the season
-    games_played = scrapy.Field()  # Total games played
-    receptions = scrapy.Field()  # Total receptions
-    receiving_yards = scrapy.Field()  # Total receiving yards
-    receiving_touchdowns = scrapy.Field()  # Receiving touchdowns
-    longest_reception = scrapy.Field()  # Longest reception in yards
+    season = scrapy.Field()
+    team = scrapy.Field()
+    games_played = scrapy.Field()
+    receptions = scrapy.Field()
+    receiving_yards = scrapy.Field()
+    receiving_touchdowns = scrapy.Field()
+    longest_reception = scrapy.Field()

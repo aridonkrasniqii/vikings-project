@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 
 from api.norsemans.norsemen_service import NorsemenService
 from api.base.views import BaseListView, BaseDetailView
-from scraping.scraping.tasks import scrape_norsemen
 
 
 class NorsemanListView(BaseListView):
@@ -31,8 +30,3 @@ class NorsemanDetailView(BaseDetailView):
 
     def delete(self, request, pk=None):
         return self.service.delete(pk)
-
-class NorsemanScrapeView(APIView):
-    def post(self, request):
-        scrape_norsemen().delay()
-        return Response({"message": "Scraping norseman started"}, status=status.HTTP_202_ACCEPTED)

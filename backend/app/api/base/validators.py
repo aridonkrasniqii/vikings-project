@@ -30,11 +30,18 @@ class BaseValidator:
             self.errors.append("Name contains invalid characters")
 
     def validate_photo_url(self, value):
+        # Allow 'N/A' as a valid value
+        if value in [None, 'N/A']:
+            return  # No error if value is 'N/A' or None
+
         if not value:
             self.errors.append("Photo URL is required")
+            return
+
         try:
             result = urlparse(value)
             if not all([result.scheme, result.netloc]):
                 self.errors.append("Invalid URL for photo")
         except ValueError:
             self.errors.append("Invalid URL format for photo")
+

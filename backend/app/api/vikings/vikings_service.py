@@ -2,10 +2,8 @@ from asgiref.sync import sync_to_async
 from django.db import transaction
 from rest_framework import status
 
-from api.base.models.entity_response import EntityResponse
 from api.base.serializers import VikingSerializer, PaginatedVikingSerializer
 from api.base.services import BaseService
-from api.base.validators import BaseValidator
 from api.vikings.vikings_model import Viking
 from api.vikings.vikings_validator import VikingValidator
 
@@ -34,10 +32,9 @@ class VikingsService(BaseService):
 
     def create(self, data):
         self._validate_data(data)
-        print("here maybe")
+
         created_viking = Viking.objects.create_viking(data)
-        print("here")
-        print(created_viking)
+
         return self.response(created_viking, status.HTTP_201_CREATED)
 
     def update(self, viking_id, data):
@@ -61,9 +58,9 @@ class VikingsService(BaseService):
             viking, created = Viking.objects.update_or_create(
                 name=data.get('name'),
                 defaults={
-                    'actor_name': data.get('actor_name', ''),
-                    'description': data.get('description', ''),
-                    'photo': data.get('photo', ''),
+                    'actor_name': data.get('actor_name'),
+                    'description': data.get('description'),
+                    'photo': data.get('photo'),
                 }
             )
         # No need to return response objects here, just ensure the record is created or updated
@@ -78,12 +75,6 @@ class VikingsService(BaseService):
 
         Viking.objects.delete_viking(viking)
         return self.response(viking, status.HTTP_200_OK, self.VIKING_DELETED)
-
-    def _validate_id(self, viking_id):
-        is_valid_id, error_message = BaseValidator.validate_id(viking_id)
-        if not is_valid_id:
-            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
-        return None
 
     def _validate_data(self, data):
         name = data.get('name')

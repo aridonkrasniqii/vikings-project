@@ -24,7 +24,7 @@ class NorsemanValidator(BaseValidator):
     def validate(self):
         self.errors = []
         self.validate_name(self.fields['name'])
-        self.validate_description()  # Including the description validation
+        self.validate_description()
         self.validate_photo_url(self.fields['photo'])
         self.validate_actor_name()
 

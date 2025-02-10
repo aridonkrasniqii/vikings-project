@@ -4,8 +4,6 @@ from rest_framework.views import APIView
 
 from api.base.views import BaseListView, BaseDetailView
 from api.vikings.vikings_service import VikingsService
-from scraping.scraping.tasks import scrape_vikings
-
 
 class VikingsListView(BaseListView):
     def __init__(self, **kwargs):
@@ -31,10 +29,5 @@ class VikingsDetailView(BaseDetailView):
 
     def delete(self, request, pk=None):
         return self.service.delete(pk)
-class VikingsScrapeView(APIView):
-
-    def post(self, request):
-        scrape_vikings().delay()
-        return Response({"message": "Scraping Vikings started"}, status=status.HTTP_202_ACCEPTED)
 
 

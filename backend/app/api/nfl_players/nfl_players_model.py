@@ -8,14 +8,13 @@ class NFLPlayer(VikingBase):
     number = models.IntegerField(null=True)
     position = models.CharField(max_length=100, null=True)
     age = models.IntegerField(null=True)
-    experience = models.IntegerField(null=True)  # Years in the NFL
+    experience = models.IntegerField(null=True)
     college = models.CharField(max_length=255, null=True)
 
     objects = NflPlayerManager()
 
     class Meta:
         db_table = 'nflplayers'
-        # app_label = "api"
 
     def __str__(self):
         return self.name
@@ -23,19 +22,18 @@ class NFLPlayer(VikingBase):
 
 class NflPlayerStats(models.Model):
     player = models.ForeignKey(NFLPlayer, related_name='stats', on_delete=models.CASCADE)
-    season = models.IntegerField()  # Season year
-    team = models.CharField(max_length=255)  # Team for the season
-    games_played = models.IntegerField(default=0)  # Total games played
-    receptions = models.IntegerField(default=0)  # Total receptions
-    receiving_yards = models.IntegerField(default=0)  # Total receiving yards
-    receiving_touchdowns = models.IntegerField(default=0)  # Receiving touchdowns
-    longest_reception = models.IntegerField(default=0)  # Longest reception in yards
+    season = models.IntegerField()
+    team = models.CharField(max_length=255)
+    games_played = models.FloatField(default=0)
+    receptions = models.FloatField(default=0)
+    receiving_yards = models.FloatField(default=0)
+    receiving_touchdowns = models.FloatField(default=0)
+    longest_reception = models.FloatField(default=0)
 
     objects = NflPlayerStatsManager()
 
     class Meta:
         db_table = 'nflplayerstats'
-        app_label = "api"
 
     def __str__(self):
         return f"{self.player.name} - {self.season}"

@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 
 from api.base.views import BaseListView, BaseDetailView
 from api.nfl_players.nfl_players_service import NFLPlayerService
-from scraping.scraping.tasks import scrape_nfl_players
 
 class NFLPlayerListView(BaseListView):
     def __init__(self, **kwargs):
@@ -30,10 +29,4 @@ class NFLPlayerDetailView(BaseDetailView):
 
     def delete(self, request, pk=None):
         return self.service.delete(pk)
-
-class NFLPlayerScrapeView(APIView):
-
-    def post(self, request):
-        scrape_nfl_players().delay()
-        return Response({"message": "Scraping NFL Players started"}, status=status.HTTP_202_ACCEPTED)
 

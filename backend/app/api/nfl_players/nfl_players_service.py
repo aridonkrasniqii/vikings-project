@@ -1,10 +1,7 @@
 from asgiref.sync import sync_to_async
 from django.db import transaction
 
-from api.base.validators import BaseValidator
-
 from rest_framework import status
-from api.base.models.entity_response import EntityResponse
 from api.base.services import BaseService
 from .nfl_players_model import NFLPlayer, NflPlayerStats
 from .nfl_players_validator import NFLPlayerValidator, NflPlayerStatsValidator
@@ -47,26 +44,28 @@ class NFLPlayerService(BaseService):
 
     @sync_to_async
     def update_or_create(self, data):
-        self._validate_data(data)
+        validation_response = self._validate_data(data)
+        if validation_response:
+            raise ValueError(f"Invalid data: {validation_response}")
 
+        print(data)
         stats_data = data.pop('stats', [])
-        player_name = data.get('name')  # Assuming name is unique
 
         with transaction.atomic():
-            nfl_player = self._update_or_create_player(player_name, data)
+            nfl_player = self._update_or_create_player(data)
             self._update_or_create_player_stats(nfl_player, stats_data)
 
         return self._generate_response(nfl_player)
 
-    def _update_or_create_player(self, player_name, data):
+    def _update_or_create_player(self, data):
         nfl_player, created = NFLPlayer.objects.update_or_create(
-            name=player_name,
+            name=data.get('name'),
             defaults={
                 'number': data.get('number'),
                 'position': data.get('position'),
                 'age': data.get('age'),
                 'experience': data.get('experience'),
-                'college': data.get('college', ''),
+                'college': data.get('college'),
             }
         )
         return nfl_player
@@ -78,11 +77,11 @@ class NFLPlayerService(BaseService):
                 season=stat.get('season'),
                 defaults={
                     'team': stat.get('team'),
-                    'games_played': stat.get('games_played', 0),
-                    'receptions': stat.get('receptions', 0),
-                    'receiving_yards': stat.get('receiving_yards', 0),
-                    'receiving_touchdowns': stat.get('receiving_touchdowns', 0),
-                    'longest_reception': stat.get('longest_reception', 0),
+                    'games_played': stat.get('games_played'),
+                    'receptions': stat.get('receptions'),
+                    'receiving_yards': stat.get('receiving_yards'),
+                    'receiving_touchdowns': stat.get('receiving_touchdowns'),
+                    'longest_reception': stat.get('longest_reception'),
                 }
             )
 
@@ -120,12 +119,6 @@ class NFLPlayerService(BaseService):
         NFLPlayer.objects.delete_nfl_player(nfl_player)
         return self.response(nfl_player, status.HTTP_200_OK, self.NFL_PLAYER_DELETED)
 
-    def _validate_id(self, nfl_player_id):
-        is_valid_id, error_message = BaseValidator.validate_id(nfl_player_id)
-        if not is_valid_id:
-            return EntityResponse(None, status.HTTP_400_BAD_REQUEST, error_message)
-        return None
-
     def _validate_data(self, data):
         name = data.get('name')
         photo = data.get('photo')
@@ -156,7 +149,7 @@ class NFLPlayerService(BaseService):
             if not is_valid:
                 return self.response(None, status.HTTP_400_BAD_REQUEST, error_message)
 
-        return
+        return None
 
 
 

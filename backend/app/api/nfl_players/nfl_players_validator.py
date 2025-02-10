@@ -45,7 +45,7 @@ class NFLPlayerValidator(BaseValidator):
         return True, None
 
 
-class NflPlayerStatsValidator():
+class NflPlayerStatsValidator:
     def __init__(self, season, team, games_played, receptions, receiving_yards, receiving_touchdowns, longest_reception):
         self.errors = []
         self.season = season
@@ -57,32 +57,32 @@ class NflPlayerStatsValidator():
         self.longest_reception = longest_reception
 
     def validate_season(self):
-        if not isinstance(self.season, int) or self.season <= 0:
-            self.errors.append("Season must be a positive integer")
+        if not isinstance(self.season, (int, float)) or self.season <= 0:
+            self.errors.append("Season must be a positive number")
 
     def validate_team(self):
         if not self.team:
             self.errors.append("Team is required")
 
     def validate_games_played(self):
-        if not isinstance(self.games_played, int) or self.games_played < 0:
-            self.errors.append("Games played must be a non-negative integer")
+        if not isinstance(self.games_played, (int, float)) or self.games_played < 0:
+            self.errors.append("Games played must be a non-negative number")
 
     def validate_receptions(self):
-        if not isinstance(self.receptions, int) or self.receptions < 0:
-            self.errors.append("Receptions must be a non-negative integer")
+        if not isinstance(self.receptions, (int, float)) or self.receptions < 0:
+            self.errors.append("Receptions must be a non-negative number")
 
     def validate_receiving_yards(self):
-        if not isinstance(self.receiving_yards, int) or self.receiving_yards < 0:
-            self.errors.append("Receiving yards must be a non-negative integer")
+        if not isinstance(self.receiving_yards, (int, float)) or self.receiving_yards < 0:
+            self.errors.append("Receiving yards must be a non-negative number")
 
     def validate_receiving_touchdowns(self):
-        if not isinstance(self.receiving_touchdowns, int) or self.receiving_touchdowns < 0:
-            self.errors.append("Receiving touchdowns must be a non-negative integer")
+        if not isinstance(self.receiving_touchdowns, (int, float)) or self.receiving_touchdowns < 0:
+            self.errors.append("Receiving touchdowns must be a non-negative number")
 
     def validate_longest_reception(self):
-        if not isinstance(self.longest_reception, int) or self.longest_reception < 0:
-            self.errors.append("Longest reception must be a non-negative integer")
+        if not isinstance(self.longest_reception, (int, float)) or self.longest_reception < 0:
+            self.errors.append("Longest reception must be a non-negative number")
 
     def validate(self):
         self.errors = []
