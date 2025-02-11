@@ -40,7 +40,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200'
+    os.getenv('CORS_ALLOWED_ORIGIN')
 ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
