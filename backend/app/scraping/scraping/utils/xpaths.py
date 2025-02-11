@@ -31,9 +31,9 @@ class NorsemanXPath(Enum):
     DESCRIPTION = '//div[contains(@class, "text") and contains(@class, "line-clamp-6")]//p/text()'
 
 class VikingsXPath(Enum):
-    CAST_MEMBER = '//a[starts-with(@href, "/shows/vikings/cast/")]'
-    ACTOR_PAGE = './/@href'
-    CHARACTER_NAME = './/div[@class="details"]//strong/text()'
-    ACTOR_NAME = './/div[@class="details"]//small/text()'
-    PHOTO = './/div[@class="img-container"]//img/@src'
+    CAST_MEMBER = '//div[@class="tile-list tile-boxed"]//ul//li/a'
+    ACTOR_PAGE = './a/@href'
+    CHARACTER_NAME = './/div[@class="details"]/strong/text()'
+    ACTOR_NAME = './/div[@class="details"]/small/text()'
+    PHOTO = './/div[@class="img-container"]/img/@src'
     DESCRIPTION = '//article[contains(@class, "main-article")]//p/text()'
