@@ -35,7 +35,6 @@ export class NorsemanTableComponent implements OnInit {
         if (response) {
           this.dataSource = response.data.map(backendNorseman => FrontendNorseman.fromBackend(backendNorseman));
           this.totalItems = response.total_items;
-          console.log(`Total Items: ${this.totalItems}`);
         } else {
           console.warn('No response received');
         }

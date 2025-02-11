@@ -36,7 +36,6 @@ export class VikingTableComponent implements OnInit, AfterViewInit {
         if (response) {
           this.dataSource = response.data.map(backendViking => FrontendViking.fromBackend(backendViking));
           this.totalItems = response.total_items;
-          console.log(`Total Items: ${this.totalItems}`);
         } else {
           console.warn('No response received');
         }

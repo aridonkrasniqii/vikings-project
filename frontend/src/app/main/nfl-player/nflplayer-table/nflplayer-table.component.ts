@@ -34,7 +34,6 @@ export class NFLPlayerTableComponent implements OnInit {
           if (response) {
             this.dataSource = response.data.map(backendNFLPlayer => FrontendNFLPlayer.fromBackend(backendNFLPlayer));
             this.totalItems = response.total_items;
-            console.log(`Total Items: ${this.totalItems}`);
           } else {
             console.warn('No response received');
           }
