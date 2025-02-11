@@ -43,13 +43,6 @@ RUN wget --no-verbose -O /tmp/chrome.deb https://mirror.cs.uchicago.edu/google-c
     apt install -y /tmp/chrome.deb && \
     rm /tmp/chrome.deb
 
-# Download latest ChromeDriver
-RUN LATEST_DRIVER=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    wget -q https://chromedriver.storage.googleapis.com/${LATEST_DRIVER}/chromedriver_linux64.zip -O /tmp/chromedriver.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip && \
-    chmod +x /usr/local/bin/chromedriver
-
 WORKDIR /app_container
 
 COPY requirements.txt /app_container/
