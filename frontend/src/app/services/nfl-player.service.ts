@@ -45,7 +45,7 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
         return this.getAllModels(this.resource, httpParams).pipe(
           map(response => response),
           catchError(error => {
-            console.error('Error in getVikings:', error);
+            console.error('Error while trying to get vikings: ', error);
             return of(null);
           })
         );
@@ -56,7 +56,7 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
     return this.getBy(`${this.resource}/${id}`).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in getNFLPlayerById:', error);
+        console.error('Error while trying to get viking by id: ', error);
         return of(null); 
       })
     );
@@ -66,7 +66,7 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
     return this.postModel(this.resource, FrontendNFLPlayer.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in createNFLPlayer:', error);
+        console.error('Error while trying to create nfl player: ', error);
         return of(null); 
       })
     );
@@ -76,7 +76,7 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
     return this.putModel(`${this.resource}/${id}/`, FrontendNFLPlayer.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in updateNFLPlayer:', error);
+        console.error('Error while trying to update nfl player: ', error);
         return of(null); 
       })
     );
@@ -86,7 +86,7 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
     return this.deleteModel(`${this.resource}/${id}`).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in deleteNFLPlayer:', error);
+        console.error('Error while trying to delete nfl player: ', error);
         return of(null); 
       })
     );

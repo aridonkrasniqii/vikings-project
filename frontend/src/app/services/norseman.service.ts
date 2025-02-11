@@ -53,7 +53,7 @@ export class NorsemanService extends BaseService<BackendNorseman> {
       return this.getAllModels(this.resource, httpParams).pipe(
         map(response => response),
         catchError(error => {
-          console.error('Error in getVikings:', error);
+          console.error('Error while trying to get norsmans: ', error);
           return of(null);
         })
       );
@@ -63,7 +63,7 @@ export class NorsemanService extends BaseService<BackendNorseman> {
     return this.getBy(`${this.resource}/name/${name}`, httpOptions).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in getNorsemanByName:', error);
+        console.error('Error while trying to get norseman by name: ', error);
         return of(null); 
       })
     );
@@ -73,7 +73,7 @@ export class NorsemanService extends BaseService<BackendNorseman> {
     return this.postModel(this.resource, FrontendNorseman.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in createNorseman:', error);
+        console.error('Error while trying to get norseman: ', error);
         return of(null); 
       })
     );
@@ -83,7 +83,7 @@ export class NorsemanService extends BaseService<BackendNorseman> {
     return this.putModel(`${this.resource}/${id}`, FrontendNorseman.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in updateNorseman:', error);
+        console.error('Error while trying to get update norsman: ', error);
         return of(null); 
       })
     );
@@ -93,7 +93,7 @@ export class NorsemanService extends BaseService<BackendNorseman> {
     return this.deleteModel(`${this.resource}/${id}`).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in deleteNorseman:', error);
+        console.error('Error while trying to delete norseman: ', error);
         return of(null); 
       })
     );

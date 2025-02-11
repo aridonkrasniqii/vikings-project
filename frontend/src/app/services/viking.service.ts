@@ -52,7 +52,7 @@ export class VikingService extends BaseService<BackendViking> {
     return this.getAllModels(this.resource, httpParams).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in getVikings:', error);
+        console.error('Error white trying to get vikings: ', error);
         return of(null);
       })
     );
@@ -63,7 +63,7 @@ export class VikingService extends BaseService<BackendViking> {
     return this.getBy(`${this.resource}/name/${name}`, httpOptions).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in getVikingByName:', error);
+        console.error('Error while trying to get viking by name', error);
         return of(null);
       })
     );
@@ -73,7 +73,7 @@ export class VikingService extends BaseService<BackendViking> {
     return this.postModel(this.resource, FrontendViking.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in createViking:', error);
+        console.error('Error in while trying to create viking: ', error);
         return of(null);
       })
     );
@@ -83,7 +83,7 @@ export class VikingService extends BaseService<BackendViking> {
     return this.putModel(`${this.resource}/${id}`, FrontendViking.toBackend(data)).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in updateViking:', error);
+        console.error('Error while trying to update viking: ', error);
         return of(null);
       })
     );
@@ -93,7 +93,7 @@ export class VikingService extends BaseService<BackendViking> {
     return this.deleteModel(`${this.resource}/${id}`).pipe(
       map(response => response),
       catchError(error => {
-        console.error('Error in deleteViking:', error);
+        console.error('Error while trying to delete viking:', error);
         return of(null);
       })
     );
