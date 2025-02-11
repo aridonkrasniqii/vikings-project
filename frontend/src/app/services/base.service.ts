@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../env/env-dev';
@@ -17,7 +17,7 @@ export abstract class BaseService<T> {
   constructor(protected http: HttpClient) {}
 
   protected handleError(response: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred:', response);  // Add logging
+    console.error('An error occurred:', response); 
     const errorResponse = {
       statusCode: response.status,
       apiUrl: response.url,
@@ -33,13 +33,22 @@ export abstract class BaseService<T> {
     return body || {};
   }
 
-  protected getAllModels(endpoint: string, query?: any): Observable<PaginatedEntity<T>> {
+  protected getAllModels(
+    endpoint: string, 
+    params: any 
+  ): Observable<PaginatedEntity<T>> {
+    
     const options = {
-      ...this.httpOptions,
-      params: query
+      headers: this.httpOptions.headers,
+      params: params 
     };
-    return this.http.get<T[]>(`${this.apiUrl}/${endpoint}/`, options).pipe(map(this.extractData), catchError(this.handleError));
+  
+    return this.http.get<PaginatedEntity<T>>(`${this.apiUrl}/${endpoint}/`, options).pipe(
+      map(this.extractData),
+      catchError(this.handleError)
+    );
   }
+  
 
   protected getBy(endpoint: string, params?: any): Observable<ResponseEntity<T>> {
     const options = {

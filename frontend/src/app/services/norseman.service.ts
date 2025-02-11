@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import { BaseService } from './base.service';
 import { PaginatedEntity } from '../interfaces/paginated.entity.interface';
 import { ResponseEntity } from '../interfaces/response.entity.interface';
 import { BackendNorseman, FrontendNorseman } from '../models/norseman.model';
+import { PaginationParams } from '../interfaces/pagination-params.inteface';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -33,20 +34,29 @@ export class NorsemanService extends BaseService<BackendNorseman> {
     );
   }
 
-  getNorsemans(pageIndex: number, pageSize: number): Observable<PaginatedEntity<BackendNorseman>> {
-    return this.getAllModels(this.resource, {
-      params: {
-        pageIndex: pageIndex.toString(),
-        pageSize: pageSize.toString()
-      },
-      ...httpOptions
-    }).pipe(
-      map(response => response),
-      catchError(error => {
-        console.error('Error in getNorsemans:', error);
-        return of(null); 
-      })
-    );
+  getNorsemans(params: PaginationParams): Observable<PaginatedEntity<BackendNorseman>> {
+     let httpParams = new HttpParams()
+          .set('page', params.page.toString())
+          .set('limit', params.limit.toString());
+    
+      if (params.q) {
+        httpParams = httpParams.set('q', params.q);
+        httpParams = httpParams.set('search_fields', 'name,actor_name');
+      }
+      if (params.asc) {
+        httpParams = httpParams.set('asc', params.asc);
+      }
+      if (params.desc) {
+        httpParams = httpParams.set('desc', params.desc);
+      }
+  
+      return this.getAllModels(this.resource, httpParams).pipe(
+        map(response => response),
+        catchError(error => {
+          console.error('Error in getVikings:', error);
+          return of(null);
+        })
+      );
   }
 
   getNorsemanByName(name: string): Observable<ResponseEntity<BackendNorseman>> {

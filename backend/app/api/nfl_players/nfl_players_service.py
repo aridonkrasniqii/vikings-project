@@ -48,7 +48,6 @@ class NFLPlayerService(BaseService):
         if validation_response:
             raise ValueError(f"Invalid data: {validation_response}")
 
-        print(data)
         stats_data = data.pop('stats', [])
 
         with transaction.atomic():

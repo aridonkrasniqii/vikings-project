@@ -1,10 +1,10 @@
 <div class="entity-table">
   <div class="entity-table__header">
     <form>
-      <input matInput type="text" placeholder="Search" name="st"[(ngModel)]="searchTerm" (ngModelChange)="applyFilter()">
+      <input matInput type="text" placeholder="Search" name="st" [(ngModel)]="searchTerm">
     </form>
     <button class="entity-table__button entity-table__button--new" routerLink="/vikings/form">New</button>
-    <button class="entity-table__button entity-table__button--filter">Add Filter</button>
+    <button class="entity-table__button entity-table__button--filter" (click)="applyFilter()">Add Filter</button>
   </div>
 
   <table mat-table [dataSource]="dataSource" matSort class="entity-table__table">
@@ -42,11 +42,9 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="totalItems"
-                 [pageSize]="itemsPerPage"
-                 [pageSizeOptions]="[5, 10, 25]"
-                 (page)="applyPagination($event)">
-  </mat-paginator>
+  <app-custom-paginator [totalItems]="totalItems"
+                        [itemsPerPage]="itemsPerPage"
+                        [currentPage]="currentPage"
+                        (pageChange)="handlePageChange($event)">
+  </app-custom-paginator>
 </div>
-
-

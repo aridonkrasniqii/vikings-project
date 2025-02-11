@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, OnInit } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NorsemanService } from '../../../services/norseman.service';
 import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
-import { FrontendNorseman } from '../../../models/norseman.model';
-import { BackendViking, FrontendViking } from '../../../models/viking.model';
+import { BackendNorseman, FrontendNorseman } from '../../../models/norseman.model';
+import { PaginationParams } from '../../../interfaces/pagination-params.inteface';
 
 @Component({
   standalone: false,
@@ -13,66 +12,60 @@ import { BackendViking, FrontendViking } from '../../../models/viking.model';
   templateUrl: './norseman-table.component.html',
   styleUrls: ['./norseman-table.component.css']
 })
-export class NorsemanTableComponent implements OnInit, AfterViewInit {
+export class NorsemanTableComponent implements OnInit {
   displayedColumns: string[] = ['picture', 'actorName', 'characterName', 'description', 'actions'];
-  dataSource = new MatTableDataSource<FrontendNorseman>();
+  dataSource: FrontendNorseman[] = [];
   searchTerm: string = '';
   totalItems = 0;
   itemsPerPage = 10;
+  currentPage = 1; // Custom paginator starts from page 1
+  sortField: string = '';
+  sortDirection: string = '';
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  constructor(private norsemanService: NorsemanService) { }
+  constructor(private norsemanService: NorsemanService) {}
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: FrontendNorseman, filter: string) => {
-      const transformedFilter = filter.trim().toLowerCase();
-      const actorName = data.actorName.trim().toLowerCase();
-      const characterName = data.name.trim().toLowerCase();
-      const description = data.description.trim().toLowerCase();
-
-      return actorName.includes(transformedFilter) || 
-             characterName.includes(transformedFilter) || 
-             description.includes(transformedFilter);
-    };
-
-    this.getNorsemans(0, this.itemsPerPage);
+    this.getNorsemans();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  getNorsemans(): void {
+    const params = this.getParams();
+    this.norsemanService.getNorsemans(params)
+      .subscribe((response: PaginatedEntity<BackendNorseman>) => {
+        if (response) {
+          this.dataSource = response.data.map(backendNorseman => FrontendNorseman.fromBackend(backendNorseman));
+          this.totalItems = response.total_items;
+          console.log(`Total Items: ${this.totalItems}`);
+        } else {
+          console.warn('No response received');
+        }
+      });
   }
 
-  getNorsemans(pageIndex: number, pageSize: number): void {
-    this.norsemanService.getNorsemans(pageIndex, pageSize).subscribe((response: PaginatedEntity<BackendViking>) => {
-      if (response) {
-        this.dataSource.data = response.data.map(backendViking => FrontendViking.fromBackend(backendViking))
-        this.totalItems = response.total_items;
-      } else {
-        console.warn('No response received');
+  getParams(): PaginationParams {
+        return {
+          page: this.currentPage,
+          limit: this.itemsPerPage, 
+          q: this.searchTerm
+        }
       }
-    });
-  }
+  
 
   deleteNorseman(id: number): void {
     this.norsemanService.deleteNorseman(id).subscribe(() => {
-      this.dataSource.data = this.dataSource.data.filter(norseman => norseman.id !== id);
-      this.totalItems = this.dataSource.data.length;
+      this.dataSource = this.dataSource.filter(norseman => norseman.id !== id);
+      this.totalItems = this.dataSource.length;
+      this.getNorsemans(); // Refresh the data after deletion
     });
   }
 
   applyFilter(): void {
-    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.currentPage = 1; // Reset to the first page
+    this.getNorsemans();
   }
 
-  applyPagination(event: any): void {
-    const pageIndex = event.pageIndex;
-    const pageSize = event.pageSize;
-    this.getNorsemans(pageIndex, pageSize);
+  handlePageChange(page: number): void {
+    this.currentPage = page;
+    this.getNorsemans();
   }
 }

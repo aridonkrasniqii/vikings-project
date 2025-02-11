@@ -1,8 +1,6 @@
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
-
 from api.base.models.paginated_entity import PaginatedEntity
-
 
 class PaginationModel(PageNumberPagination):
     PAGE_SIZE = 10
@@ -14,20 +12,20 @@ class PaginationModel(PageNumberPagination):
     def __init__(self, request):
         self.request = request
         self.search_fields = self.get_search_fields_from_request()
-        self.q = request.GET.get('q', None)
-        self.asc = request.GET.get('asc', None)
-        self.desc = request.GET.get('desc', None)
+        self.q = request.query_params.get('q', None)
+        self.asc = request.query_params.get('asc', None)
+        self.desc = request.query_params.get('desc', None)
         self.page = None
         self.paginator = None
 
-        limit = request.GET.get('limit')
+        limit = request.query_params.get('limit')
         if limit and limit.isdigit():
             self.page_size = min(int(limit), self.max_page_size)
         else:
             self.page_size = self.PAGE_SIZE
 
     def get_search_fields_from_request(self):
-        search_fields_param = self.request.GET.get('search_fields', '')
+        search_fields_param = self.request.query_params.get('search_fields', '')
         return search_fields_param.split(',') if search_fields_param else []
 
     def get_search_filters(self):
@@ -48,7 +46,6 @@ class PaginationModel(PageNumberPagination):
     def paginate_queryset(self, queryset, request, view=None):
         self.paginator = self.django_paginator_class(queryset, self.get_page_size(request))
         page_number = self.get_page_number(request, self.paginator)
-
         try:
             self.page = self.paginator.page(page_number)
         except Exception:
@@ -61,8 +58,8 @@ class PaginationModel(PageNumberPagination):
         total_pages = self.paginator.num_pages if self.paginator else 1
         current_page = self.page.number if self.page else 1
         limit = self.page_size if self.page_size else self.PAGE_SIZE
-        data = paginated_queryset.object_list if paginated_queryset else []
-
+        data = list(paginated_queryset) if paginated_queryset else []
+        
         return PaginatedEntity(
             total_items=total_items,
             total_pages=total_pages,
@@ -70,6 +67,3 @@ class PaginationModel(PageNumberPagination):
             limit=limit,
             data=data
         )
-
-
-

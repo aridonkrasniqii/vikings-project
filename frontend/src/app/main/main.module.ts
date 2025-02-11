@@ -29,6 +29,8 @@ import { NFLPlayerService } from '../services/nfl-player.service';
 import { NFLPlayerDetailsComponent } from './nfl-player/nflplayer-details/nflplayer-details.component';
 import { NFLPlayerFormComponent } from './nfl-player/nflplayer-form/nflplayer-form.component';
 import { NorsemanFormComponent } from './norseman/norseman-form/norseman-form.component';
+import { MatSortModule } from '@angular/material/sort';
+import { CustomPaginatorComponent } from '../components/custom-paginator.component';
 
 
 @NgModule({
@@ -48,6 +50,7 @@ import { NorsemanFormComponent } from './norseman/norseman-form/norseman-form.co
     NFLPlayerTableComponent,
     NFLPlayerEditComponent, 
     NFLPlayerFormComponent,
+    CustomPaginatorComponent,
     MainComponent
 ],
   imports: [
@@ -59,6 +62,7 @@ import { NorsemanFormComponent } from './norseman/norseman-form/norseman-form.co
     MatPaginatorModule,
     MatTableModule,
     MatInputModule,
+    MatSortModule,
     HttpClientModule
   ],
   providers: [VikingService, NorsemanService, NFLPlayerService]

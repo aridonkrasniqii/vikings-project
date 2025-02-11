@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { BaseService } from './base.service';
 import { PaginatedEntity } from '../interfaces/paginated.entity.interface';
 import { ResponseEntity } from '../interfaces/response.entity.interface';
 import { BackendViking, FrontendViking } from '../models/viking.model';
+import { PaginationParams } from '../interfaces/pagination-params.inteface';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -26,32 +27,44 @@ export class VikingService extends BaseService<BackendViking> {
 
   getVikingById(id: number): Observable<ResponseEntity<BackendViking>> {
     return this.getBy(`${this.resource}/${id}`).pipe(
-      map(response => response), 
-    catchError(err =>  { console.log(err); return of(null)} ));
+      map(response => response),
+      catchError(err => { console.log(err); return of(null) }));
   }
 
-  getVikings(pageIndex: number, pageSize: number): Observable<PaginatedEntity<BackendViking>> {
-    return this.getAllModels(this.resource, {
-      params: {
-        pageIndex: pageIndex.toString(),
-        pageSize: pageSize.toString()
-      },
-      ...httpOptions
-    }).pipe(
+  getVikings(
+    params: PaginationParams): Observable<PaginatedEntity<BackendViking>> {
+
+    let httpParams = new HttpParams()
+      .set('page', params.page.toString())
+      .set('limit', params.limit.toString());
+
+    if (params.q) {
+      httpParams = httpParams.set('q', params.q);
+      httpParams = httpParams.set('search_fields', 'name,actor_name');
+    }
+    if (params.asc) {
+      httpParams = httpParams.set('asc', params.asc);
+    }
+    if (params.desc) {
+      httpParams = httpParams.set('desc', params.desc);
+    }
+
+    return this.getAllModels(this.resource, httpParams).pipe(
       map(response => response),
       catchError(error => {
         console.error('Error in getVikings:', error);
-        return of(null); 
+        return of(null);
       })
     );
   }
+
 
   getVikingByName(name: string): Observable<ResponseEntity<BackendViking>> {
     return this.getBy(`${this.resource}/name/${name}`, httpOptions).pipe(
       map(response => response),
       catchError(error => {
         console.error('Error in getVikingByName:', error);
-        return of(null); 
+        return of(null);
       })
     );
   }
@@ -61,7 +74,7 @@ export class VikingService extends BaseService<BackendViking> {
       map(response => response),
       catchError(error => {
         console.error('Error in createViking:', error);
-        return of(null); 
+        return of(null);
       })
     );
   }
@@ -71,7 +84,7 @@ export class VikingService extends BaseService<BackendViking> {
       map(response => response),
       catchError(error => {
         console.error('Error in updateViking:', error);
-        return of(null); 
+        return of(null);
       })
     );
   }
@@ -81,7 +94,7 @@ export class VikingService extends BaseService<BackendViking> {
       map(response => response),
       catchError(error => {
         console.error('Error in deleteViking:', error);
-        return of(null); 
+        return of(null);
       })
     );
   }

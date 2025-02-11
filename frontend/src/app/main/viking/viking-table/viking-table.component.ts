@@ -1,12 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { VikingService } from '../../../services/viking.service';
 
 import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
 import { BackendViking, FrontendViking } from '../../../models/viking.model';
-
+import { PaginationParams } from '../../../interfaces/pagination-params.inteface';
 
 @Component({
   standalone: false,
@@ -16,67 +13,59 @@ import { BackendViking, FrontendViking } from '../../../models/viking.model';
 })
 export class VikingTableComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['picture', 'actorName', 'characterName', 'description', 'actions'];
-  dataSource = new MatTableDataSource<FrontendViking>();
+  dataSource: FrontendViking[] = [];
   searchTerm: string = '';
   totalItems = 0;
   itemsPerPage = 10;
+  currentPage = 1;
+  sortField: string = '';
+  sortDirection: string = '';
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  constructor(private vikingService: VikingService) { }
+  constructor(private vikingService: VikingService) {}
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: FrontendViking, filter: string) => {
-      const transformedFilter = filter.trim().toLowerCase();
-      const actorName = data.actorName.trim().toLowerCase();
-      const characterName = data.name.trim().toLowerCase();
-      const description = data.description.trim().toLowerCase();
-
-      return actorName.includes(transformedFilter) || 
-             characterName.includes(transformedFilter) || 
-             description.includes(transformedFilter);
-    };
-
-    this.getVikings(0, this.itemsPerPage);
+    this.getVikings();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  ngAfterViewInit(): void {}
+
+  getVikings(): void {
+    const params = this.getParams();
+    this.vikingService.getVikings(params)
+      .subscribe((response: PaginatedEntity<BackendViking>) => {
+        if (response) {
+          this.dataSource = response.data.map(backendViking => FrontendViking.fromBackend(backendViking));
+          this.totalItems = response.total_items;
+          console.log(`Total Items: ${this.totalItems}`);
+        } else {
+          console.warn('No response received');
+        }
+      });
   }
 
-  getVikings(pageIndex: number, pageSize: number): void {
-    // .set('pageIndex', pageIndex.toString()) // TODO:
-    // .set('pageSize', pageSize.toString())
-    // .set('searchTerm', searchTerm.trim().toLowerCase());
-    this.vikingService.getVikings(pageIndex, pageSize).subscribe((response: PaginatedEntity<BackendViking>) => {
-      if (response) {
-        this.dataSource.data = response.data.map(backendViking => FrontendViking.fromBackend(backendViking)); 
-        this.totalItems = response.total_items;
-      } else {
-        console.warn('No response received');
-      }
-    });
+  getParams(): PaginationParams {
+    return {
+      page: this.currentPage,
+      limit: this.itemsPerPage, 
+      q: this.searchTerm
+    }
   }
 
   deleteViking(id: number): void {
     this.vikingService.deleteViking(id).subscribe(() => {
-      this.dataSource.data = this.dataSource.data.filter(viking => viking.id !== id);
-      this.totalItems = this.dataSource.data.length;
+      this.dataSource = this.dataSource.filter(viking => viking.id !== id);
+      this.totalItems = this.dataSource.length;
+      this.getVikings(); // Refresh the data after deletion
     });
   }
 
   applyFilter(): void {
-    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.currentPage = 1; // Reset to the first page
+    this.getVikings();
   }
 
-  applyPagination(event: any): void {
-    const pageIndex = event.pageIndex;
-    const pageSize = event.pageSize;
-    this.getVikings(pageIndex, pageSize);
+  handlePageChange(page: number): void {
+    this.currentPage = page;
+    this.getVikings();
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { PaginatedEntity } from '../interfaces/paginated.entity.interface';
 import { ResponseEntity } from '../interfaces/response.entity.interface';
 import { BackendNFLPlayer, FrontendNFLPlayer } from '../models/nfl-players.model';
+import { PaginationParams } from '../interfaces/pagination-params.inteface';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -25,21 +26,31 @@ export class NFLPlayerService extends BaseService<BackendNFLPlayer> {
     super(http);
   }
 
-  getNFLPlayers(pageIndex: number, pageSize: number): Observable<PaginatedEntity<BackendNFLPlayer>> {
-    return this.getAllModels(this.resource, {
-      params: {
-        pageIndex: pageIndex.toString(),
-        pageSize: pageSize.toString()
-      },
-      ...httpOptions
-    }).pipe(
-      map(response => response),
-      catchError(error => {
-        console.error('Error in getNFLPlayers:', error);
-        return of(null); 
-      })
-    );
-  }
+  getNFLPlayers(params: PaginationParams): Observable<PaginatedEntity<BackendNFLPlayer>> {
+     let httpParams = new HttpParams()
+          .set('page', params.page.toString())
+          .set('limit', params.limit.toString());
+    
+        if (params.q) {
+          httpParams = httpParams.set('q', params.q);
+          httpParams = httpParams.set('search_fields', 'name,college');
+        }
+        if (params.asc) {
+          httpParams = httpParams.set('asc', params.asc);
+        }
+        if (params.desc) {
+          httpParams = httpParams.set('desc', params.desc);
+        }
+    
+        return this.getAllModels(this.resource, httpParams).pipe(
+          map(response => response),
+          catchError(error => {
+            console.error('Error in getVikings:', error);
+            return of(null);
+          })
+        );
+      }
+
 
   getNFLPlayerById(id: number): Observable<ResponseEntity<BackendNFLPlayer>> {
     return this.getBy(`${this.resource}/${id}`).pipe(

@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit } from '@angular/core';
 import { NFLPlayerService } from '../../../services/nfl-player.service';
 import { PaginatedEntity } from '../../../interfaces/paginated.entity.interface';
 import { BackendNFLPlayer, FrontendNFLPlayer } from '../../../models/nfl-players.model';
-
+import { PaginationParams } from '../../../interfaces/pagination-params.inteface';
+import { BackendViking, FrontendViking } from '../../../models/viking.model';
 
 @Component({
   standalone: false,
@@ -13,66 +11,59 @@ import { BackendNFLPlayer, FrontendNFLPlayer } from '../../../models/nfl-players
   templateUrl: './nflplayer-table.component.html',
   styleUrls: ['./nflplayer-table.component.css']
 })
-export class NFLPlayerTableComponent implements OnInit, AfterViewInit {
+export class NFLPlayerTableComponent implements OnInit {
   displayedColumns: string[] = ['photo', 'name', 'number', 'position', 'age', 'experience', 'college', 'actions'];
-  dataSource = new MatTableDataSource<FrontendNFLPlayer>();
+  dataSource: FrontendNFLPlayer[] = [];
   searchTerm: string = '';
   totalItems = 0;
   itemsPerPage = 10;
+  currentPage = 1; 
+  sortField: string = '';
+  sortDirection: string = '';
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  constructor(private nflPlayerService: NFLPlayerService) { }
+  constructor(private nflPlayerService: NFLPlayerService) {}
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = (data: FrontendNFLPlayer, filter: string) => {
-      const transformedFilter = filter.trim().toLowerCase();
-      const name = data.name.trim().toLowerCase();
-      const position = data.position.trim().toLowerCase();
-      const college = data.college.trim().toLowerCase();
-
-      return name.includes(transformedFilter) || 
-             position.includes(transformedFilter) || 
-             college.includes(transformedFilter);
-    };
-
-    this.getNFLPlayers(0, this.itemsPerPage);
+    this.getNFLPlayers();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  getNFLPlayers(pageIndex: number, pageSize: number): void {
-    this.nflPlayerService.getNFLPlayers(pageIndex, pageSize).subscribe((response: PaginatedEntity<BackendNFLPlayer>) => {
-      if (response) {
-        this.dataSource.data = response.data.map(backendNFLPlayer => FrontendNFLPlayer.fromBackend(backendNFLPlayer));
-        this.totalItems = response.total_items;
-      } else {
-        console.warn('No response received');
+  getNFLPlayers(): void {
+      const params = this.getParams();
+      this.nflPlayerService.getNFLPlayers(params)
+        .subscribe((response: PaginatedEntity<BackendNFLPlayer>) => {
+          if (response) {
+            this.dataSource = response.data.map(backendNFLPlayer => FrontendNFLPlayer.fromBackend(backendNFLPlayer));
+            this.totalItems = response.total_items;
+            console.log(`Total Items: ${this.totalItems}`);
+          } else {
+            console.warn('No response received');
+          }
+        });
+    }
+  
+    getParams(): PaginationParams {
+      return {
+        page: this.currentPage,
+        limit: this.itemsPerPage, 
+        q: this.searchTerm
       }
-    });
-  }
+    }
 
   deleteNFLPlayer(id: number): void {
     this.nflPlayerService.deleteNFLPlayer(id).subscribe(() => {
-      this.dataSource.data = this.dataSource.data.filter(player => player.id !== id);
-      this.totalItems = this.dataSource.data.length;
+      this.dataSource = this.dataSource.filter(player => player.id !== id);
+      this.totalItems = this.dataSource.length;
+      this.getNFLPlayers();
     });
   }
 
   applyFilter(): void {
-    this.dataSource.filter = this.searchTerm.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.currentPage = 1;
+    this.getNFLPlayers();
   }
 
-  applyPagination(event: any): void {
-    const pageIndex = event.pageIndex;
-    const pageSize = event.pageSize;
-    this.getNFLPlayers(pageIndex, pageSize);
+  handlePageChange(page: number): void {
+    this.currentPage = page;
+    this.getNFLPlayers();
   }
 }
